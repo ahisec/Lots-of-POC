@@ -1,0 +1,21 @@
+id: dahua-clientServer-sqli
+
+info:
+  name: dahua-clientServer-sqli
+  author: dahua-clientServer-sqli
+
+requests:
+  - raw:
+      - |
+        GET /portal/services/clientServer?wsdl HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.93 Safari/537.36
+        Connection: close
+        AContent-Type: text/xml;charset=UTF-8
+        Accept-Encoding: gzip
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(body,'getGroupInfoListByGroupId')
+

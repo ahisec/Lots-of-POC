@@ -1,0 +1,20 @@
+id: zhiyuan-OAV52019-properties-xinxixielou
+
+info:
+  name: 致远OAV52019系统properties信息泄露漏洞
+  author: cnaq
+  severity: high
+  tags: zhiyuan,fileRead
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/seeyon/rest/m3/common/system/properties"
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "rmi.host"
+        part: body
+        condition: and
+

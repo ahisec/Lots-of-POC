@@ -1,0 +1,19 @@
+id: yongyou-u8crm-datacache-crmdebug-infoleak
+
+info:
+  name: yongyou-u8crm-datacache-crmdebug-infoleak
+  author: msk
+  severity: high
+
+http:
+  - raw:
+      - |
+        HEAD /datacache/crmdebug.log HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+        Connection: close
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==200 && contains_all(all_headers,"text/plain")'

