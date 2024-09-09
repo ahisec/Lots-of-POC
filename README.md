@@ -49,20 +49,10 @@
 
 我们按照以下分类整理 POC：
 
-- **Web 漏洞**（Web Vulnerabilities）
-  - SQL 注入（SQL Injection）
-  - XSS（Cross-Site Scripting）
-  - 远程命令执行（Remote Code Execution）
-- **网络服务漏洞**（Network Services Vulnerabilities）
-  - 未授权访问（Unauthorized Access）
-  - 信息泄露（Information Disclosure）
-- **CMS 漏洞**（Content Management System Vulnerabilities）
-  - WordPress
-  - Joomla
-  - Drupal
-- **其他**（Others）
-  - 漏洞利用工具（Exploit Tools）
-  - Zero-Day 漏洞（Zero-Day Exploits）
+- **Nuclei**
+  - 按权重最高tags字段进行分类
+- **Goby**
+  - 按VulType字段进行分类
 
 ## 📜 许可证
 
@@ -83,5 +73,4 @@
 1. **项目简介**部分简要介绍了项目的目的和内容。
 2. **安装与使用**部分提供了如何安装和使用项目中的 POC。
 3. **POC 分类**部分列出了整理的 POC 类型。
-4. **贡献指南**鼓励社区参与并详细介绍了如何贡献。
 5. **许可证和致谢**提供了项目的版权信息和感谢声明。
