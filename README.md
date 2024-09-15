@@ -51,7 +51,7 @@
 我们按照以下分类整理 POC：
 
 - **Nuclei**
-  - 目录结构类似于官方二级的 http 目录，将直接按日期进行分类（未来可能会调整，为了与官方 POC 进行互补，可将相关漏洞补充到~/nuclei-templates/http/vulnerabilities/目录下）
+  - 厂商/产品/nuclei的yaml文件
 - **Goby**
   - goby POC 没有分类的必要，点击客户端的“导入自定义 PoC”，Allin 即可
 
